@@ -1,8 +1,7 @@
 // ===============================
 // タスク管理 & ポイント管理
 // ===============================
-
-let points = 0;
+let points = 50;
 let level = 1;
 let exp = 0;
 let selectedTask = null;
@@ -16,7 +15,6 @@ const createTaskBtn = document.getElementById("create-task-btn");
 const finishTaskBtn = document.getElementById("finish-task-btn");
 const deleteTaskBtn = document.getElementById("delete-task-btn");
 
-// タスク作成
 createTaskBtn.onclick = () => {
     const taskName = prompt("新しいタスク名を入力:");
     if(taskName) {
@@ -27,7 +25,6 @@ createTaskBtn.onclick = () => {
     }
 };
 
-// タスク選択
 function selectTask(li) {
     if(selectedTask) selectedTask.style.backgroundColor = "#1a1a2e";
     selectedTask = li;
@@ -36,7 +33,6 @@ function selectTask(li) {
     deleteTaskBtn.disabled = false;
 }
 
-// タスク完了
 finishTaskBtn.onclick = () => {
     if(selectedTask) {
         alert(`「${selectedTask.textContent}」を完了！ポイント+10`);
@@ -49,7 +45,6 @@ finishTaskBtn.onclick = () => {
         }
         pointsDisplay.textContent = points;
         levelDisplay.textContent = level;
-        expBar.value = exp;
         taskList.removeChild(selectedTask);
         selectedTask = null;
         finishTaskBtn.disabled = true;
@@ -57,7 +52,6 @@ finishTaskBtn.onclick = () => {
     }
 };
 
-// タスク削除
 deleteTaskBtn.onclick = () => {
     if(selectedTask) {
         if(confirm(`「${selectedTask.textContent}」を削除しますか？`)) {
@@ -73,51 +67,116 @@ deleteTaskBtn.onclick = () => {
 // ユーザー名変更
 // ===============================
 const usernameDisplay = document.getElementById("username-display");
-
 usernameDisplay.onclick = () => {
     const newName = prompt("ユーザー名を入力:");
     if(newName) usernameDisplay.textContent = newName;
 };
 
 // ===============================
-// アバター簡易描画
+// アバター構造
 // ===============================
 const avatarCanvas = document.getElementById("avatar-canvas");
 const avatarCtx = avatarCanvas.getContext("2d");
 
-function drawAvatar() {
-    avatarCtx.fillStyle = "#ffcc00";
-    avatarCtx.fillRect(50, 50, 50, 50); // 顔
-    avatarCtx.fillStyle = "#000000";
-    avatarCtx.fillRect(60, 60, 10, 10); // 左目
-    avatarCtx.fillRect(80, 60, 10, 10); // 右目
-    avatarCtx.fillStyle = "#ff0000";
-    avatarCtx.fillRect(65, 80, 20, 10); // 口
-}
+let avatarParts = {hair:0, eyes:0, shirt:0, accessory:0};
+const hairColors = ["#ffcc00","#ff6600","#66ccff"];
+const eyeColors = ["#000","#663300","#3333ff"];
+const shirtColors = ["#f00","#0f0","#00f"];
+const accessoryColors = ["#fff","#f0f"];
 
+function drawAvatar() {
+    avatarCtx.clearRect(0,0,avatarCanvas.width,avatarCanvas.height);
+    // 髪
+    avatarCtx.fillStyle = hairColors[avatarParts.hair];
+    avatarCtx.fillRect(40,20,70,30);
+    // 顔
+    avatarCtx.fillStyle = "#ffe0bd";
+    avatarCtx.fillRect(50,50,50,50);
+    // 目
+    avatarCtx.fillStyle = eyeColors[avatarParts.eyes];
+    avatarCtx.fillRect(60,60,10,10);
+    avatarCtx.fillRect(80,60,10,10);
+    // 口
+    avatarCtx.fillStyle = "#f00";
+    avatarCtx.fillRect(65,80,20,10);
+    // シャツ
+    avatarCtx.fillStyle = shirtColors[avatarParts.shirt];
+    avatarCtx.fillRect(50,100,50,50);
+    // アクセサリ
+    avatarCtx.fillStyle = accessoryColors[avatarParts.accessory];
+    avatarCtx.fillRect(75,55,10,10);
+}
 drawAvatar();
 
 // ===============================
-// ショップボタン（簡易表示）
+// モーダル表示・編集
 // ===============================
-document.getElementById("open-shop").onclick = () => {
-    alert("ショップ機能はまだ開発中です。ポイントでパーツを交換できるようになります！");
-};
+const modal = document.getElementById("modal");
+const modalContent = document.getElementById("modal-content");
 
-// ===============================
-// アバター編集ボタン（簡易表示）
-// ===============================
 document.getElementById("open-avatar-editor").onclick = () => {
-    alert("アバター編集機能はまだ開発中です。ドット絵パーツで自分だけのキャラを作れます！");
+    showAvatarEditor();
+};
+document.getElementById("open-shop").onclick = () => {
+    showShop();
 };
 
-// ===============================
-// カレンダー・設定ボタン（簡易表示）
-// ===============================
-document.getElementById("calendar-btn").onclick = () => {
-    alert("カレンダー機能はまだ開発中です。タスク達成や予定を管理できます！");
-};
+function showAvatarEditor() {
+    modal.style.display = "block";
+    modalContent.innerHTML = "<h2>アバター編集</h2>";
+    ["hair","eyes","shirt","accessory"].forEach(part => {
+        const div = document.createElement("div");
+        div.textContent = part + ": ";
+        const maxIndex = {
+            hair: hairColors.length,
+            eyes: eyeColors.length,
+            shirt: shirtColors.length,
+            accessory: accessoryColors.length
+        }[part];
+        for(let i=0;i<maxIndex;i++){
+            const btn = document.createElement("button");
+            btn.textContent = i;
+            btn.onclick = () => {avatarParts[part]=i; drawAvatar();}
+            div.appendChild(btn);
+        }
+        modalContent.appendChild(div);
+    });
+    const closeBtn = document.createElement("button");
+    closeBtn.textContent="閉じる";
+    closeBtn.onclick=()=>{modal.style.display="none";}
+    modalContent.appendChild(closeBtn);
+}
 
-document.getElementById("settings-btn").onclick = () => {
-    alert("設定機能はまだ開発中です。ここからテーマや通知を変更できます！");
-};
+function showShop() {
+    modal.style.display="block";
+    modalContent.innerHTML="<h2>ショップ</h2>";
+    ["hair","eyes","shirt","accessory"].forEach(part=>{
+        const div=document.createElement("div");
+        div.textContent=part+": ";
+        const maxIndex={hair:3,eyes:3,shirt:3,accessory:2}[part];
+        for(let i=0;i<maxIndex;i++){
+            const btn=document.createElement("button");
+            const price=20;
+            btn.textContent=`購入 ${price}P`;
+            btn.onclick=()=>{
+                if(points>=price){
+                    points-=price;
+                    pointsDisplay.textContent=points;
+                    alert(`${part}のパーツを購入しました`);
+                }else{alert("ポイントが足りません");}
+            }
+            div.appendChild(btn);
+        }
+        modalContent.appendChild(div);
+    });
+    const closeBtn=document.createElement("button");
+    closeBtn.textContent="閉じる";
+    closeBtn.onclick=()=>{modal.style.display="none";}
+    modalContent.appendChild(closeBtn);
+}
+
+// ===============================
+// カレンダー・設定ボタン
+// ===============================
+document.getElementById("calendar-btn").onclick=()=>{alert("カレンダーは開発中");};
+document.getElementById("settings-btn").onclick=()=>{alert("設定は開発中");};
