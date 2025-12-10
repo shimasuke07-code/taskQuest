@@ -157,8 +157,3 @@ footer {
     height: 100px;
   }
 }
-
-
-.level-flash {
-  animation: level-flash 0.5s ease-in-out;
-}
