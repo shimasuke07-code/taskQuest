@@ -1,67 +1,172 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <title>TaskQuest</title>
-  <style>
-    body {
-      background-color: #111; /* 背景黒 */
-      color: #fff;
-      font-family: Arial, sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 20px;
-    }
-    canvas {
-      border: 2px solid #fff;
-      background-color: #222;
-      margin-bottom: 10px;
-    }
-    #shop button {
-      margin: 5px 0;
-    }
-    button {
-      cursor: pointer;
-      padding: 5px 10px;
-      background-color: #444;
-      color: #fff;
-      border: none;
-      border-radius: 5px;
-    }
-    button:hover {
-      background-color: #666;
-    }
-  </style>
+<meta charset="UTF-8">
+<title>TaskQuest</title>
+<style>
+  body {
+    background-color: #111;
+    color: #fff;
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+  }
+  canvas {
+    border: 2px solid #fff;
+    background-color: #222;
+    margin-bottom: 10px;
+  }
+  button {
+    cursor: pointer;
+    padding: 5px 10px;
+    background-color: #444;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    margin: 5px;
+  }
+  button:hover {
+    background-color: #666;
+  }
+  #shop button {
+    display: block;
+    margin: 5px 0;
+  }
+  .task {
+    margin: 5px 0;
+  }
+</style>
 </head>
 <body>
 
-  <h1>TaskQuest</h1>
+<h1>TaskQuest</h1>
 
-  <!-- アバター -->
-  <canvas id="avatar-canvas" width="120" height="120"></canvas>
+<!-- アバター -->
+<canvas id="avatar-canvas" width="120" height="120"></canvas>
 
-  <!-- ポイント表示 -->
-  <div id="points">ポイント: 0</div>
+<!-- ポイント表示 -->
+<div id="points">ポイント: 0</div>
 
-  <!-- ショップ -->
-  <button id="open-shop">ショップを開く</button>
-  <div id="shop"></div>
+<!-- ショップ -->
+<button id="open-shop">ショップを開く</button>
+<div id="shop"></div>
 
-  <!-- 敵アニメーション -->
-  <canvas id="enemy-canvas" width="150" height="120" style="border:2px solid #fff; background:#222; margin-top:20px;"></canvas>
-  <div id="enemy-hp">敵HP: 0</div>
-  <button onclick="attack()">攻撃</button>
-  <button onclick="skill()">スキル</button>
-  <button onclick="magic()">魔法</button>
+<!-- タスク追加 -->
+<h3>タスク</h3>
+<input type="text" id="task-input" placeholder="タスク名">
+<button id="add-task">+作成</button>
+<div id="tasks"></div>
 
-  <!-- チームボス用 -->
-<button onclick="attackBoss(50)">ボスに攻撃(50ダメージ)</button>
+<script>
+/* ======================================================
+   ユーザー＆アバター
+====================================================== */
+let user = { points: 0 };
+let avatar = { bodyColor:"#888", hairColor:"#fff", hairType:"short", accessory:"none", accessoryColor:"#fff" };
+let avatarFrame = 0;
 
-  <!-- ここに他のUI（タスクとか）を追加 -->
+function animateAvatar(){
+  avatarFrame++;
+  const c = document.getElementById("avatar-canvas");
+  const ctx = c.getContext("2d");
 
-  <!-- JSファイル読み込み -->
-  <script src="script.js"></script>
+  // 背景
+  const bg = ctx.createLinearGradient(0,0,c.width,c.height);
+  bg.addColorStop(0,"#111");
+  bg.addColorStop(1,"#222");
+  ctx.fillStyle = bg;
+  ctx.fillRect(0,0,c.width,c.height);
+
+  // 体
+  ctx.fillStyle = avatar.bodyColor;
+  ctx.fillRect(45,60,30,50);
+
+  // 顔
+  ctx.fillRect(45,30,30,30);
+
+  // 髪
+  ctx.fillStyle = avatar.hairColor;
+  ctx.fillRect(40,25,40,10);
+
+  // 枠
+  ctx.strokeStyle = "#fff";
+  ctx.lineWidth = 2;
+  ctx.strokeRect(0,0,c.width,c.height);
+
+  requestAnimationFrame(animateAvatar);
+}
+requestAnimationFrame(animateAvatar);
+
+/* ======================================================
+   ポイント表示更新
+====================================================== */
+function updateUI(){
+  document.getElementById("points").textContent = `ポイント: ${user.points}`;
+}
+updateUI();
+
+/* ======================================================
+   ショップ
+====================================================== */
+const shopItems = [
+  {id:1,name:"赤い帽子",type:"hat",color:"#f00",price:50},
+  {id:2,name:"青い髪飾り",type:"accessory",color:"#00f",price:100},
+  {id:3,name:"緑のマント",type:"cape",color:"#0f0",price:150}
+];
+
+function openShop(){
+  const shopDiv = document.getElementById("shop");
+  shopDiv.innerHTML = "<h3>パーツショップ</h3>";
+  shopItems.forEach(item=>{
+    const btn = document.createElement("button");
+    btn.textContent = `${item.name} - ${item.price}pt`;
+    btn.onclick = ()=>{
+      if(user.points >= item.price){
+        user.points -= item.price;
+        avatar[item.type] = item.color;
+        alert(`${item.name} をゲット！`);
+        updateUI();
+      } else {
+        alert("ポイントが足りません！");
+      }
+    };
+    shopDiv.appendChild(btn);
+  });
+}
+document.getElementById("open-shop").onclick = openShop;
+
+/* ======================================================
+   タスク追加＆完了でポイント加算
+====================================================== */
+function addTask(){
+  const input = document.getElementById("task-input");
+  const taskName = input.value.trim();
+  if(!taskName) return;
+
+  const taskDiv = document.createElement("div");
+  taskDiv.className = "task";
+  taskDiv.textContent = taskName + " ";
+
+  const doneBtn = document.createElement("button");
+  doneBtn.textContent = "完了";
+  doneBtn.onclick = ()=>{
+    user.points += 10; // タスク完了でポイント加算
+    updateUI();
+    taskDiv.remove();
+  };
+
+  taskDiv.appendChild(doneBtn);
+  document.getElementById("tasks").appendChild(taskDiv);
+
+  input.value = "";
+}
+document.getElementById("add-task").onclick = addTask;
+
+</script>
+</body>
+</html>
 
 </body>
 </html>
