@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>TaskQuest</title>
+<link rel="stylesheet" href="style.css">
+<style>
+body {
+  background: radial-gradient(circle at center, #0b0c21, #000000);
+  color: #fff;
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: flex-start;
+  padding: 20px;
+  height: 100vh;
+}
+.section {
+  background-color: rgba(0,0,0,0.5);
+  padding: 15px;
+  border-radius: 10px;
+  flex: 1;
+  margin: 10px;
+  min-width: 250px;
+}
+canvas {
+  border: 2px solid #fff;
+  background-color: transparent;
+  margin-bottom: 10px;
+}
+button {
+  cursor: pointer;
+  padding: 5px 10px;
+  background-color: #444;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  margin: 5px;
+}
+button:hover {
+  background-color: #666;
+}
+#shop button { display:block; margin:5px 0; }
+.task { margin:5px 0; }
+</style>
+</head>
+<body>
+
+<div class="section">
+  <img src="images/logo.png" style="width:200px;height:40px;">
+  <canvas id="avatar-canvas" width="120" height="120"></canvas>
+  <div id="points">ポイント: 0</div>
+  <button id="open-shop">ショップを開く</button>
+  <div id="shop"></div>
+</div>
+
+<div class="section">
+  <h3>タスク</h3>
+  <input type="text" id="task-input" placeholder="タスク名">
+  <button id="add-task">+作成</button>
+  <div id="tasks"></div>
+</div>
+
+<div class="section">
+  <h3>チームボス戦</h3>
+  <canvas id="enemy-canvas" width="150" height="120"></canvas>
+  <div id="enemy-hp">敵HP: 1000</div>
+  <button onclick="attackBoss(10)">ボスに攻撃(10)</button>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
