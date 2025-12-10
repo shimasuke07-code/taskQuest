@@ -2,226 +2,47 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>TaskQuest</title>
+<title>TaskQuest ホーム</title>
+<link rel="stylesheet" href="style.css">
 <style>
-  body {
-    background-color: #111;
-    color: #fff;
-    font-family: Arial, sans-serif;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-  }
-  canvas {
-    border: 2px solid #fff;
-    background-color: #222;
-    margin-bottom: 10px;
-  }
-  button {
-    cursor: pointer;
-    padding: 5px 10px;
-    background-color: #444;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    margin: 5px;
-  }
-  button:hover {
-    background-color: #666;
-  }
-  #shop button {
-    display: block;
-    margin: 5px 0;
-  }
-  .task {
-    margin: 5px 0;
-  }
+body {
+  background: radial-gradient(circle at center, #0b0c21, #000000);
+  color: #fff;
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  text-align: center;
+}
+button {
+  cursor: pointer;
+  padding: 10px 20px;
+  margin: 10px;
+  background-color: #444;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+}
+button:hover {
+  background-color: #666;
+}
+img.logo {
+  width: 300px;
+  height: 60px;
+  margin-bottom: 40px;
+}
 </style>
 </head>
 <body>
 
-<h1>TaskQuest</h1>
+<img src="images/logo.png" alt="TaskQuestロゴ" class="logo">
 
-<!-- アバター -->
-<canvas id="avatar-canvas" width="120" height="120"></canvas>
+<h1>TaskQuestへようこそ！</h1>
+<p>タスクをゲーム感覚で管理しよう！</p>
 
-<!-- ポイント表示 -->
-<div id="points">ポイント: 0</div>
-
-<!-- ショップ -->
-<button id="open-shop">ショップを開く</button>
-<div id="shop"></div>
-
-<!-- タスク追加 -->
-<h3>タスク</h3>
-<input type="text" id="task-input" placeholder="タスク名">
-<button id="add-task">+作成</button>
-<div id="tasks"></div>
-
-<!-- チームボス -->
-<h3>チームボス戦</h3>
-<canvas id="enemy-canvas" width="150" height="120"></canvas>
-<div id="enemy-hp">敵HP: 1000</div>
-<button onclick="attackBoss(10)">ボスにタスク完了で攻撃(10ダメージ)</button>
-
-<script>
-/* ======================================================
-   ユーザー＆アバター
-====================================================== */
-let user = { points: 0 };
-let avatar = { bodyColor:"#888", hairColor:"#fff", hairType:"short", accessory:"none", accessoryColor:"#fff" };
-let avatarFrame = 0;
-
-function animateAvatar(){
-  avatarFrame++;
-  const c = document.getElementById("avatar-canvas");
-  const ctx = c.getContext("2d");
-
-  // 背景
-  const bg = ctx.createLinearGradient(0,0,c.width,c.height);
-  bg.addColorStop(0,"#111");
-  bg.addColorStop(1,"#222");
-  ctx.fillStyle = bg;
-  ctx.fillRect(0,0,c.width,c.height);
-
-  // 体
-  ctx.fillStyle = avatar.bodyColor;
-  ctx.fillRect(45,60,30,50);
-
-  // 顔
-  ctx.fillRect(45,30,30,30);
-
-  // 髪
-  ctx.fillStyle = avatar.hairColor;
-  ctx.fillRect(40,25,40,10);
-
-  // 枠
-  ctx.strokeStyle = "#fff";
-  ctx.lineWidth = 2;
-  ctx.strokeRect(0,0,c.width,c.height);
-
-  requestAnimationFrame(animateAvatar);
-}
-requestAnimationFrame(animateAvatar);
-
-/* ======================================================
-   ポイント表示更新
-====================================================== */
-function updateUI(){
-  document.getElementById("points").textContent = `ポイント: ${user.points}`;
-}
-updateUI();
-
-/* ======================================================
-   ショップ
-====================================================== */
-const shopItems = [
-  {id:1,name:"赤い帽子",type:"hat",color:"#f00",price:50},
-  {id:2,name:"青い髪飾り",type:"accessory",color:"#00f",price:100},
-  {id:3,name:"緑のマント",type:"cape",color:"#0f0",price:150}
-];
-
-function openShop(){
-  const shopDiv = document.getElementById("shop");
-  shopDiv.innerHTML = "<h3>パーツショップ</h3>";
-  shopItems.forEach(item=>{
-    const btn = document.createElement("button");
-    btn.textContent = `${item.name} - ${item.price}pt`;
-    btn.onclick = ()=>{
-      if(user.points >= item.price){
-        user.points -= item.price;
-        avatar[item.type] = item.color;
-        alert(`${item.name} をゲット！`);
-        updateUI();
-      } else {
-        alert("ポイントが足りません！");
-      }
-    };
-    shopDiv.appendChild(btn);
-  });
-}
-document.getElementById("open-shop").onclick = openShop;
-
-/* ======================================================
-   チームボス
-====================================================== */
-let boss = { name:"巨大ボス", maxHP:1000, hp:1000 };
-
-function drawBoss(){
-  const c = document.getElementById("enemy-canvas");
-  const ctx = c.getContext("2d");
-  ctx.clearRect(0,0,c.width,c.height);
-
-  // 背景
-  const bg = ctx.createLinearGradient(0,0,c.width,c.height);
-  bg.addColorStop(0,"#330000");
-  bg.addColorStop(1,"#550000");
-  ctx.fillStyle = bg;
-  ctx.fillRect(0,0,c.width,c.height);
-
-  // ボス円
-  ctx.fillStyle = "#880000";
-  ctx.beginPath();
-  ctx.arc(c.width/2, c.height/2, 50, 0, Math.PI*2);
-  ctx.fill();
-
-  // HPバー
-  ctx.fillStyle = "#fff";
-  ctx.fillRect(10,10,c.width-20,10);
-  ctx.fillStyle = "#0f0";
-  ctx.fillRect(10,10,(c.width-20)*(boss.hp/boss.maxHP),10);
-
-  // HPテキスト
-  ctx.fillStyle = "#fff";
-  ctx.font = "12px Arial";
-  ctx.fillText(`HP: ${boss.hp}/${boss.maxHP}`, 10, 35);
-
-  requestAnimationFrame(drawBoss);
-}
-requestAnimationFrame(drawBoss);
-
-function attackBoss(dmg){
-  boss.hp -= dmg;
-  if(boss.hp < 0) boss.hp = 0;
-
-  if(boss.hp === 0){
-    alert("ボスを倒した！おめでとう！");
-    boss.hp = boss.maxHP; // リセット
-  }
-}
-
-/* ======================================================
-   タスク追加＆完了でポイント＆ボス攻撃
-====================================================== */
-function addTask(){
-  const input = document.getElementById("task-input");
-  const taskName = input.value.trim();
-  if(!taskName) return;
-
-  const taskDiv = document.createElement("div");
-  taskDiv.className = "task";
-  taskDiv.textContent = taskName + " ";
-
-  const doneBtn = document.createElement("button");
-  doneBtn.textContent = "完了";
-  doneBtn.onclick = ()=>{
-    user.points += 10;         // ポイント加算
-    updateUI();
-    attackBoss(10);            // ボスに自動攻撃10ダメージ
-    taskDiv.remove();           // タスク削除
-  };
-
-  taskDiv.appendChild(doneBtn);
-  document.getElementById("tasks").appendChild(taskDiv);
-  input.value = "";
-}
-document.getElementById("add-task").onclick = addTask;
-
-</script>
-</body>
-</html>
+<button onclick="location.href='taskquest.html'">ゲームを始める</button>
 
 </body>
 </html>
-
