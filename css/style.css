@@ -1,251 +1,153 @@
-/* ============================
-   全体基本設定
-============================ */
-body {
+/* ===============================
+   全体リセット & ベース
+=============================== */
+* {
     margin: 0;
-    background: #000;
-    color: #fff;
-    font-family: "Hiragino Sans", Arial, sans-serif;
-    overflow-x: hidden;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
 }
 
+body {
+    background: radial-gradient(ellipse at center, #0b0c1a 0%, #000000 100%);
+    color: #ffffff;
+    min-height: 100vh;
+}
+
+/* ===============================
+   スクリーン共通
+=============================== */
 .screen {
-    display: none;
     padding: 20px;
 }
 
-.screen.active {
-    display: block;
-}
-
-/* ============================
-   ホーム画面
-============================ */
-.home-container {
+header {
     text-align: center;
-    margin-top: 100px;
+    margin-bottom: 20px;
 }
 
-.home-logo {
-    width: 300px;
-    height: auto;
+.logo {
+    width: 200px;
+    display: block;
+    margin: 0 auto 10px;
 }
 
-.big-button {
-    margin-top: 40px;
-    padding: 15px 40px;
-    font-size: 24px;
-    border-radius: 12px;
-    background: #3366ff;
+.logo-small {
+    width: 80px;
+    display: block;
+    margin: 0 auto 5px;
+}
+
+h1 {
+    color: #ffffff;
+    font-size: 1.8em;
+    margin-bottom: 5px;
+}
+
+h2 {
+    margin: 15px 0 10px;
+    font-size: 1.4em;
+}
+
+/* ===============================
+   ボタン
+=============================== */
+button {
+    background: linear-gradient(145deg, #3a3b5e, #1f1f2f);
+    color: #ffffff;
     border: none;
-    color: white;
+    padding: 10px 20px;
+    margin: 5px 5px 5px 0;
+    border-radius: 8px;
     cursor: pointer;
-}
-.big-button:hover {
-    background: #5a80ff;
-}
-
-/* ============================
-   上部バー
-============================ */
-.topbar {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px;
-    background: #111;
-    border-bottom: 1px solid #444;
+    transition: 0.2s;
+    font-size: 1em;
 }
 
-.small-button {
-    padding: 6px 10px;
-    background: #444;
-    color: white;
-    border: none;
+button:hover {
+    background: linear-gradient(145deg, #5050a0, #2f2f4f);
+}
+
+/* ===============================
+   タスクリスト
+=============================== */
+ul#task-list {
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 10px;
+}
+
+ul#task-list li {
+    background: #1a1a2e;
+    padding: 8px 12px;
+    margin-bottom: 5px;
     border-radius: 6px;
     cursor: pointer;
-}
-.small-button:hover {
-    background: #666;
+    transition: 0.2s;
 }
 
-/* ============================
-   3カラムレイアウト
-============================ */
-.columns {
-    display: flex;
-    gap: 20px;
-    padding: 20px;
+ul#task-list li:hover {
+    background: #333366;
 }
 
-.column {
-    flex: 1;
-    background: #111;
-    padding: 15px;
-    border-radius: 12px;
-    min-height: 80vh;
-}
-
-/* ============================
-   アバターCanvas
-============================ */
-#avatar-canvas, #enemy-canvas {
-    background: #000;
-    border: 2px solid #333;
-    border-radius: 8px;
-    display: block;
-    margin: 10px auto;
-}
-
-/* ============================
-   ステータスボックス
-============================ */
-.status-box {
-    background: #222;
-    padding: 10px;
-    margin-top: 10px;
-    border-radius: 8px;
-}
-
-.exp-bar {
+/* ===============================
+   プログレスバー
+=============================== */
+progress {
     width: 100%;
-    height: 10px;
-    background: #333;
-    border-radius: 5px;
-    margin: 5px 0;
+    height: 20px;
+    border-radius: 10px;
+    overflow: hidden;
 }
 
-#exp-fill {
-    height: 10px;
-    width: 0%;
-    background: #00ff88;
-    border-radius: 5px;
-}
-
-/* ============================
-   タスクリスト
-============================ */
-.task-list .task {
-    background: #222;
-    padding: 8px;
-    margin-top: 5px;
-    border-radius: 8px;
-    display: flex;
-    justify-content: space-between;
-}
-
-.task button {
-    padding: 4px 6px;
-    background: #3366ff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-/* ============================
+/* ===============================
    カレンダー
-============================ */
-#calendar {
+=============================== */
+#calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 3px;
     margin-top: 10px;
 }
 
 .calendar-day {
-    width: 40px;
-    height: 40px;
-    background: #222;
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    margin: 3px;
-    border-radius: 5px;
-}
-
-.calendar-day.done {
-    background: #00aa44;
-}
-
-.calendar-day.today {
-    border: 2px solid yellow;
-}
-
-/* ============================
-   日記
-============================ */
-#diary {
-    width: 100%;
-    height: 100px;
-    background: #111;
-    color: white;
-    border: 1px solid #444;
-    padding: 10px;
-    border-radius: 8px;
-}
-
-/* ============================
-   アバター編集
-============================ */
-#avatar-editor-screen {
+    background: #1a1a2e;
     text-align: center;
-}
-#avatar-editor-screen select,
-#avatar-editor-screen input[type="color"] {
-    margin-bottom: 20px;
-}
-
-/* ============================
-   ショップ
-============================ */
-#shop-items button {
-    width: 100%;
-    padding: 10px;
-    margin-top: 5px;
-    background: #444;
-    border: none;
-    color: white;
-    border-radius: 6px;
-}
-#shop-items button:hover {
-    background: #666;
+    padding: 8px 0;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
 }
 
-/* ============================
-   設定
-============================ */
-.theme-button {
-    padding: 6px 12px;
-    margin-right: 10px;
+.calendar-day.empty {
+    background: transparent;
+    cursor: default;
 }
 
-.danger-button {
-    padding: 10px;
-    background: #aa0000;
-    border: none;
-    color: white;
+.success-mark {
+    color: #00ffcc;
+    display: block;
+    font-size: 1.1em;
+}
+
+/* ===============================
+   アバターキャンバス
+=============================== */
+#avatar-canvas {
+    display: block;
+    margin: 10px auto;
+    background: #0d0d1a;
+    border: 2px solid #5555aa;
     border-radius: 8px;
-    margin-top: 20px;
-}
-.danger-button:hover {
-    background: #dd0000;
 }
 
-/* ============================
-   テーマ：宇宙
-============================ */
-.theme-space {
-    background: radial-gradient(circle, #001122, #000000);
-}
-
-/* ============================
-   テーマ：ダーク
-============================ */
-.theme-dark {
-    background: #000;
-}
-
-/* ============================
-   テーマ：ネオン
-============================ */
-.theme-neon {
-    background: #000;
-    color: #0ff;
+/* ===============================
+   フッター
+=============================== */
+footer {
+    text-align: center;
+    margin-top: 30px;
+    font-size: 0.9em;
+    color: #bbbbbb;
 }
 
