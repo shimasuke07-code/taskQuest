@@ -8,7 +8,7 @@ function saveTasks() {
 }
 
 function getLevel(totalPoints) {
-  return Math.floor(totalPoints / 10) + 1; // 10Pごとにレベルアップ
+  return Math.floor(totalPoints / 10) + 1;
 }
 
 function getNextLevelPoints(level) {
@@ -27,18 +27,12 @@ function renderTasks() {
 
     const editBtn = document.createElement('button');
     editBtn.textContent = '編集';
-    editBtn.onclick = (e) => {
-      e.stopPropagation();
-      editTask(index);
-    };
+    editBtn.onclick = (e) => { e.stopPropagation(); editTask(index); };
     li.appendChild(editBtn);
 
     const deleteBtn = document.createElement('button');
     deleteBtn.textContent = '削除';
-    deleteBtn.onclick = (e) => {
-      e.stopPropagation();
-      deleteTask(index);
-    };
+    deleteBtn.onclick = (e) => { e.stopPropagation(); deleteTask(index); };
     li.appendChild(deleteBtn);
 
     list.appendChild(li);
@@ -49,7 +43,7 @@ function addTask() {
   const input = document.getElementById('new-task');
   const text = input.value.trim();
   const pointsInput = parseInt(document.getElementById('task-points').value) || 1;
-  if (text === '') return;
+  if (!text) return;
   tasks.push({ text, completed: false, points: pointsInput });
   input.value = '';
   document.getElementById('task-points').value = 1;
@@ -63,7 +57,6 @@ function toggleTask(index) {
 
   if (task.completed) {
     points += task.points;
-
     showPointsEffect(task.points);
 
     const listItems = document.querySelectorAll('#task-list li');
@@ -128,6 +121,5 @@ function showPointsEffect(pointsGained) {
   setTimeout(() => pop.remove(), 1000);
 }
 
-// 初期表示
 renderTasks();
 updateAvatar();
