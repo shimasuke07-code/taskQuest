@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <title>TaskQuest</title>
-  <!-- ゲームっぽいフォント -->
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
@@ -12,11 +11,17 @@
 
   <div class="sidebar-left">
     <h2>キャラクター</h2>
-    <img src="images/avatar.png" alt="キャラクター" class="avatar" id="avatar">
+    <img src="images/avatar1.png" alt="キャラクター" class="avatar" id="avatar">
     <p>名前: <span id="username">たろう</span></p>
     <p>レベル: <span id="level">1</span></p>
     <p>HP: 100</p>
     <p>経験値: <span id="exp">0/50</span></p>
+    <h3>アバター変更</h3>
+    <div class="avatar-select">
+      <img src="images/avatar1.png" onclick="changeAvatar(0)">
+      <img src="images/avatar2.png" onclick="changeAvatar(1)">
+      <img src="images/avatar3.png" onclick="changeAvatar(2)">
+    </div>
   </div>
 
   <div class="main">
@@ -36,10 +41,6 @@
     <h2>ポイント</h2>
     <p id="points">0</p>
   </div>
-
-  <script src="js/script.js"></script>
-</body>
-</html>
 
   <script src="js/script.js"></script>
 </body>
