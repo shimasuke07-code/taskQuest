@@ -14,9 +14,6 @@ body {
     min-height: 100vh;
 }
 
-/* ===============================
-   スクリーン共通
-=============================== */
 .screen {
     padding: 20px;
 }
@@ -47,6 +44,23 @@ h1 {
 h2 {
     margin: 15px 0 10px;
     font-size: 1.4em;
+}
+
+/* ===============================
+   メイン横並び
+=============================== */
+#taskquest-screen main {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+    flex-wrap: wrap;
+}
+
+.left-panel, .center-panel, .right-panel {
+    background: rgba(20,20,40,0.6);
+    padding: 10px;
+    border-radius: 10px;
+    margin: 5px;
 }
 
 /* ===============================
@@ -98,36 +112,6 @@ progress {
     height: 20px;
     border-radius: 10px;
     overflow: hidden;
-}
-
-/* ===============================
-   カレンダー
-=============================== */
-#calendar-days {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 3px;
-    margin-top: 10px;
-}
-
-.calendar-day {
-    background: #1a1a2e;
-    text-align: center;
-    padding: 8px 0;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.9em;
-}
-
-.calendar-day.empty {
-    background: transparent;
-    cursor: default;
-}
-
-.success-mark {
-    color: #00ffcc;
-    display: block;
-    font-size: 1.1em;
 }
 
 /* ===============================
