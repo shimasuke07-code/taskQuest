@@ -1,8 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
 <head>
   <meta charset="UTF-8">
   <title>TaskQuest</title>
+  <!-- ゲームっぽいフォント -->
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -23,9 +25,9 @@
 
     <input type="text" id="taskInput" placeholder="新しいタスク">
     <select id="categorySelect">
-      <option value="習慣">習慣</option>
-      <option value="今日">今日</option>
-      <option value="やること">やること</option>
+      <option value="習慣">⚔️ 習慣</option>
+      <option value="今日">🛡️ 今日</option>
+      <option value="やること">💎 やること</option>
     </select>
     <button onclick="addTask()">追加</button>
   </div>
@@ -34,6 +36,10 @@
     <h2>ポイント</h2>
     <p id="points">0</p>
   </div>
+
+  <script src="js/script.js"></script>
+</body>
+</html>
 
   <script src="js/script.js"></script>
 </body>
