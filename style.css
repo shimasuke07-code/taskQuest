@@ -29,14 +29,18 @@ body {
 }
 
 /* アバター */
-.avatar {
-  width: 100px;
-  height: 100px;
+.avatar-select img {
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
+  margin: 5px;
   border: 2px solid white;
-  display: block;
-  margin: 0 auto 10px auto;
-  transition: all 0.3s;
+  cursor: pointer;
+  transition: transform 0.2s, border-color 0.2s;
+}
+.avatar-select img:hover {
+  transform: scale(1.1);
+  border-color: gold;
 }
 
 /* タスク */
