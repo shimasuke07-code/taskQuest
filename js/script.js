@@ -1,198 +1,557 @@
 /* ======================================================
-   初期データ（ユーザー / アバター）
+    TaskQuest 完全版 script.js（パート1）
+    - 画面切り替え
+    - localStorage 初期化
+    - ユーザー名保存/表示
 ====================================================== */
-let user = {
-  points: 0
+
+/* ------------------------------
+   画面管理
+------------------------------ */
+function showScreen(id) {
+    document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+    document.getElementById(id).classList.add("active");
+}
+
+/* ------------------------------
+   データ初期値
+------------------------------ */
+let data = {
+    username: "ヒーロー",
+    points: 0,
+    level: 1,
+    exp: 0,
+    expMax: 100,
+    avatar: {
+        bodyColor: "#888888",
+        hairColor: "#ffffff",
+        accessory: "none",
+        accessoryColor: "#ff0000"
+    },
+    tasks: [],
+    routines: [],
+    missions: [],
+    diary: {},
+    theme: "space",
+    boss: {
+        hp: 1000,
+        max: 1000
+    }
 };
 
-let avatar = {
-  bodyColor: "#888",
-  hairColor: "#fff",
-  accessoryColor: "#f00",
-  accessoryType: "none"
+/* ------------------------------
+   データ読み込み
+------------------------------ */
+function loadData() {
+    const saved = localStorage.getItem("taskquest");
+    if (saved) {
+        data = JSON.parse(saved);
+    }
+}
+loadData();
+
+/* ------------------------------
+   データ保存
+------------------------------ */
+function saveData() {
+    localStorage.setItem("taskquest", JSON.stringify(data));
+}
+
+/* ------------------------------
+   ホーム → サインイン
+------------------------------ */
+document.getElementById("start-button").onclick = () => {
+    showScreen("signin-screen");
 };
 
-let avatarFrame = 0;
+/* ------------------------------
+   サインイン
+------------------------------ */
+document.getElementById("save-username").onclick = () => {
+    const name = document.getElementById("username-input").value.trim();
+    if (name !== "") {
+        data.username = name;
+        saveData();
+    }
+    updateUI();
+    showScreen("main-screen");
+};
 
+/* ------------------------------
+   ユーザー名表示更新
+------------------------------ */
+function updateUI() {
+    document.getElementById("username-display").textContent = data.username;
+    document.getElementById("points").textContent = data.points;
+    document.getElementById("level").textContent = data.level;
+    document.getElementById("exp").textContent = data.exp;
+    document.getElementById("exp-max").textContent = data.expMax;
+
+    let percent = (data.exp / data.expMax) * 100;
+    document.getElementById("exp-fill").style.width = percent + "%";
+}
+
+updateUI();
+
+/* ------------------------------
+   設定画面の開閉
+------------------------------ */
+document.getElementById("open-settings").onclick = () => {
+    showScreen("settings-screen");
+};
+document.getElementById("close-settings").onclick = () => {
+    showScreen("main-screen");
+};
+
+/* ------------------------------
+   名前変更
+------------------------------ */
+document.getElementById("edit-username").onclick = () => {
+    const newName = prompt("新しい名前を入力", data.username);
+    if (newName && newName.trim() !== "") {
+        data.username = newName;
+        saveData();
+        updateUI();
+    }
+};
+
+/* ------------------------------
+   データ削除
+------------------------------ */
+document.getElementById("reset-data").onclick = () => {
+    if (confirm("本当に全部消しますか？")) {
+        localStorage.removeItem("taskquest");
+        location.reload();
+    }
+};
 
 /* ======================================================
-   アバター描画（宇宙背景＋ドット風）
+   テーマ切り替え
 ====================================================== */
+function applyTheme() {
+    document.body.classList.remove("theme-space", "theme-dark", "theme-neon");
+    document.body.classList.add("theme-" + data.theme);
+}
+
+applyTheme();
+
+document.querySelectorAll(".theme-button").forEach(btn => {
+    btn.onclick = () => {
+        data.theme = btn.dataset.theme;
+        saveData();
+        applyTheme();
+    };
+});
+
+/* ======================================================
+    アバター描画（ドット絵 + アニメーション + 宇宙背景）
+====================================================== */
+
+const avatarCanvas = document.getElementById("avatar-canvas");
+const actx = avatarCanvas.getContext("2d");
+
+let avatarAnimFrame = 0;
+
 function drawAvatar() {
-  const c = document.getElementById("avatar-canvas");
-  const ctx = c.getContext("2d");
+    const ctx = actx;
+    ctx.clearRect(0, 0, avatarCanvas.width, avatarCanvas.height);
 
-  ctx.clearRect(0, 0, c.width, c.height);
+    /* ---- 宇宙背景 ---- */
+    ctx.fillStyle = "#000";
+    ctx.fillRect(0, 0, avatarCanvas.width, avatarCanvas.height);
+    for (let i = 0; i < 15; i++) {
+        ctx.fillStyle = "white";
+        ctx.fillRect(Math.random() * 150, Math.random() * 180, 1, 1);
+    }
 
-  // 宇宙背景（小さな星を散らす）
-  ctx.fillStyle = "#000";
-  ctx.fillRect(0, 0, c.width, c.height);
-  for (let i = 0; i < 25; i++) {
-    ctx.fillStyle = "white";
-    ctx.fillRect(Math.random() * c.width, Math.random() * c.height, 1, 1);
-  }
+    /* ---- ドット風キャラ ---- */
+    // 顔
+    ctx.fillStyle = "#ffe0b5";
+    ctx.fillRect(50, 20, 50, 50);
 
-  // 体
-  ctx.fillStyle = avatar.bodyColor;
-  ctx.fillRect(40, 60, 40, 50);
+    // 目（アニメ：まばたき）
+    let eyeSize = (avatarAnimFrame % 60 < 5) ? 2 : 5;
+    ctx.fillStyle = "#000";
+    ctx.fillRect(65, 40, 5, eyeSize);
+    ctx.fillRect(80, 40, 5, eyeSize);
 
-  // 顔
-  ctx.fillStyle = "#ffe0bd";
-  ctx.fillRect(40, 30, 40, 30);
+    // 髪
+    ctx.fillStyle = data.avatar.hairColor;
+    ctx.fillRect(45, 10, 60, 20);
 
-  // 髪
-  ctx.fillStyle = avatar.hairColor;
-  ctx.fillRect(35, 25, 50, 15);
+    // 体
+    ctx.fillStyle = data.avatar.bodyColor;
+    ctx.fillRect(50, 70, 50, 70);
 
-  // アクセサリー（例：マント）
-  if (avatar.accessoryType === "mantle") {
-    ctx.fillStyle = avatar.accessoryColor;
-    ctx.fillRect(35, 60, 50, 10);
-  }
+    /* ---- アクセサリー ---- */
+    if (data.avatar.accessory.includes("mantle")) {
+        // マント揺れアニメーション
+        let sway = Math.sin(avatarAnimFrame / 10) * 3;
 
-  // 目
-  ctx.fillStyle = "#000";
-  ctx.fillRect(50, 40, 5, 5);
-  ctx.fillRect(65, 40, 5, 5);
+        let color = "#ff0000";
+        if (data.avatar.accessory === "mantle-blue") color = "#00aaff";
+        if (data.avatar.accessory === "mantle-green") color = "#00ff55";
 
-  requestAnimationFrame(drawAvatar);
+        ctx.fillStyle = color;
+        ctx.fillRect(45 + sway, 70, 60, 20);
+    }
+
+    avatarAnimFrame++;
+    requestAnimationFrame(drawAvatar);
 }
 
 requestAnimationFrame(drawAvatar);
 
-
 /* ======================================================
-   UI更新（ポイント表示）
+    ショップ生成
 ====================================================== */
-function updateUI() {
-  document.getElementById("points").textContent = `ポイント: ${user.points}`;
-}
-updateUI();
 
-
-/* ======================================================
-   ショップ
-====================================================== */
-const shopItems = [
-  { id: 1, name: "赤いマント", type: "mantle", color: "#f00", price: 50 },
-  { id: 2, name: "青いマント", type: "mantle", color: "#00f", price: 70 },
-  { id: 3, name: "緑のマント", type: "mantle", color: "#0f0", price: 90 }
+const shopData = [
+    { id: 1, name: "赤いマント", price: 50, accessory: "mantle-red" },
+    { id: 2, name: "青いマント", price: 70, accessory: "mantle-blue" },
+    { id: 3, name: "緑のマント", price: 90, accessory: "mantle-green" },
 ];
 
-function openShop() {
-  const shopDiv = document.getElementById("shop");
-  shopDiv.innerHTML = "<h3>パーツショップ</h3>";
+document.getElementById("open-shop").onclick = () => {
+    const shop = document.getElementById("shop-items");
+    shop.innerHTML = "";
 
-  shopItems.forEach(item => {
-    const btn = document.createElement("button");
-    btn.textContent = `${item.name} - ${item.price}pt`;
+    shopData.forEach(item => {
+        let btn = document.createElement("button");
+        btn.textContent = `${item.name} - ${item.price}pt`;
 
-    btn.onclick = () => {
-      if (user.points >= item.price) {
-        user.points -= item.price;
-        updateUI();
+        btn.onclick = () => {
+            if (data.points >= item.price) {
+                data.points -= item.price;
+                data.avatar.accessory = item.accessory;
+                saveData();
+                updateUI();
+                alert(item.name + " を買いました！");
+            } else {
+                alert("ポイントが足りません！");
+            }
+        };
 
-        avatar.accessoryType = item.type;
-        avatar.accessoryColor = item.color;
+        shop.appendChild(btn);
+    });
 
-        alert(`${item.name} を入手しました！`);
-      } else {
-        alert("ポイントが足りません！");
-      }
-    };
-
-    shopDiv.appendChild(btn);
-  });
-}
-
-document.getElementById("open-shop").onclick = openShop;
-
-
-/* ======================================================
-   チームボス
-====================================================== */
-let boss = {
-  name: "巨大ボス",
-  maxHP: 1000,
-  hp: 1000
+    showScreen("shop-screen");
 };
 
-function drawBoss() {
-  const c = document.getElementById("enemy-canvas");
-  const ctx = c.getContext("2d");
-
-  ctx.clearRect(0, 0, c.width, c.height);
-
-  // 背景
-  const bg = ctx.createLinearGradient(0, 0, c.width, c.height);
-  bg.addColorStop(0, "#330000");
-  bg.addColorStop(1, "#550000");
-  ctx.fillStyle = bg;
-  ctx.fillRect(0, 0, c.width, c.height);
-
-  // ボス本体（円）
-  ctx.fillStyle = "#880000";
-  ctx.beginPath();
-  ctx.arc(c.width / 2, c.height / 2, 50, 0, Math.PI * 2);
-  ctx.fill();
-
-  // HPバー（白の外枠）
-  ctx.fillStyle = "#fff";
-  ctx.fillRect(10, 10, c.width - 20, 10);
-
-  // HP残量（緑）
-  ctx.fillStyle = "#0f0";
-  ctx.fillRect(10, 10, (c.width - 20) * (boss.hp / boss.maxHP), 10);
-
-  // HP数値
-  ctx.fillStyle = "#fff";
-  ctx.font = "12px Arial";
-  ctx.fillText(`HP: ${boss.hp}/${boss.maxHP}`, 10, 35);
-
-  requestAnimationFrame(drawBoss);
-}
-
-requestAnimationFrame(drawBoss);
-
-
-function attackBoss(dmg) {
-  boss.hp -= dmg;
-  if (boss.hp < 0) boss.hp = 0;
-
-  if (boss.hp === 0) {
-    alert("ボスを倒した！すごい！");
-    boss.hp = boss.maxHP;
-  }
-}
-
+document.getElementById("close-shop").onclick = () => {
+    showScreen("main-screen");
+};
 
 /* ======================================================
-   タスク追加 → 完了でポイント＋ボス攻撃
+    アバターエディタ（色変更）
 ====================================================== */
-function addTask() {
-  const input = document.getElementById("task-input");
-  const taskName = input.value.trim();
+document.getElementById("open-avatar-editor").onclick = () => {
+    document.getElementById("body-color").value = data.avatar.bodyColor;
+    document.getElementById("hair-color").value = data.avatar.hairColor;
+    document.getElementById("accessory-select").value = data.avatar.accessory;
 
-  if (!taskName) return;
+    showScreen("avatar-editor-screen");
+};
 
-  const taskDiv = document.createElement("div");
-  taskDiv.className = "task";
-  taskDiv.textContent = taskName + " ";
+document.getElementById("close-avatar-editor").onclick = () => {
+    data.avatar.bodyColor = document.getElementById("body-color").value;
+    data.avatar.hairColor = document.getElementById("hair-color").value;
+    data.avatar.accessory = document.getElementById("accessory-select").value;
 
-  const doneBtn = document.createElement("button");
-  doneBtn.textContent = "完了";
+    saveData();
+    showScreen("main-screen");
+};
 
-  doneBtn.onclick = () => {
-    user.points += 10;
-    updateUI();
-    attackBoss(10);
-    taskDiv.remove();
-  };
+/* ======================================================
+    ▼ タスク管理（追加・完了・削除）
+====================================================== */
 
-  taskDiv.appendChild(doneBtn);
-  document.getElementById("tasks").appendChild(taskDiv);
+const taskList = document.getElementById("task-list");
+const finishTaskBtn = document.getElementById("finish-task-btn");
+const deleteTaskBtn = document.getElementById("delete-task-btn");
+let selectedTaskId = null;
 
-  input.value = "";
+function renderTasks() {
+    taskList.innerHTML = "";
+
+    data.tasks.forEach(task => {
+        const li = document.createElement("li");
+        li.textContent = task.title;
+        li.dataset.id = task.id;
+
+        li.onclick = () => {
+            selectedTaskId = task.id;
+            finishTaskBtn.disabled = false;
+            deleteTaskBtn.disabled = false;
+        };
+
+        taskList.appendChild(li);
+    });
 }
 
-document.getElementById("add-task").onclick = addTask;
+document.getElementById("create-task-btn").onclick = () => {
+    const title = prompt("タスク名を入力してください：");
+    if (!title) return;
+
+    data.tasks.push({
+        id: Date.now(),
+        title,
+        done: false
+    });
+
+    saveData();
+    renderTasks();
+};
+
+finishTaskBtn.onclick = () => {
+    if (!selectedTaskId) return;
+
+    const task = data.tasks.find(t => t.id === selectedTaskId);
+    task.done = true;
+
+    gainReward();
+    doDamageToBoss();
+
+    data.tasks = data.tasks.filter(t => t.id !== selectedTaskId);
+    saveData();
+    renderTasks();
+
+    selectedTaskId = null;
+    finishTaskBtn.disabled = true;
+    deleteTaskBtn.disabled = true;
+};
+
+deleteTaskBtn.onclick = () => {
+    if (!selectedTaskId) return;
+
+    data.tasks = data.tasks.filter(t => t.id !== selectedTaskId);
+    saveData();
+    renderTasks();
+
+    selectedTaskId = null;
+    finishTaskBtn.disabled = true;
+    deleteTaskBtn.disabled = true;
+};
+
+/* ======================================================
+    ▼ 報酬（ポイント + EXP）
+====================================================== */
+function gainReward() {
+    const getPt = 10;
+    const getExp = 20;
+
+    data.points += getPt;
+    data.exp += getExp;
+
+    levelCheck();
+    saveData();
+    updateUI();
+}
+
+/* ======================================================
+    ▼ レベルアップ
+====================================================== */
+function levelCheck() {
+    const needExp = data.level * 100;
+
+    if (data.exp >= needExp) {
+        data.exp -= needExp;
+        data.level++;
+
+        alert(`レベルアップ！ Lv.${data.level} になった！`);
+    }
+}
+
+/* ======================================================
+    ▼ ボス戦
+====================================================== */
+
+const enemies = [
+    { id: 1, name: "スライム", maxHP: 50 },
+    { id: 2, name: "ゴーレム", maxHP: 80 },
+    { id: 3, name: "暗黒竜", maxHP: 150 },
+];
+
+function startBossBattle(bossId) {
+    const boss = enemies.find(b => b.id === bossId);
+
+    data.boss = {
+        id: boss.id,
+        name: boss.name,
+        maxHP: boss.maxHP,
+        hp: boss.maxHP
+    };
+
+    saveData();
+    updateBossUI();
+    showScreen("battle-screen");
+}
+
+function updateBossUI() {
+    const boss = data.boss;
+    if (!boss) return;
+
+    const bar = document.getElementById("boss-hp-bar");
+    const label = document.getElementById("boss-name");
+
+    bar.max = boss.maxHP;
+    bar.value = boss.hp;
+    label.textContent = `${boss.name}（HP: ${boss.hp}/${boss.maxHP}）`;
+}
+
+function doDamageToBoss() {
+    if (!data.boss) return;
+
+    const damage = 10;
+    data.boss.hp -= damage;
+
+    if (data.boss.hp <= 0) {
+        alert(`${data.boss.name} を倒した！`);
+        data.boss = null;
+    }
+
+    saveData();
+    updateBossUI();
+}
+
+document.getElementById("back-main-screen").onclick = () => {
+    showScreen("main-screen");
+};
+
+/* ======================================================
+    ▼ カレンダー機能
+====================================================== */
+
+const calendarDays = document.getElementById("calendar-days");
+
+function buildCalendar(year, month) {
+    calendarDays.innerHTML = "";
+
+    const first = new Date(year, month, 1);
+    const last = new Date(year, month + 1, 0);
+    const startDay = first.getDay();
+    const totalDay = last.getDate();
+
+    // 空白
+    for (let i = 0; i < startDay; i++) {
+        const empty = document.createElement("div");
+        empty.className = "calendar-day empty";
+        calendarDays.appendChild(empty);
+    }
+
+    // 日付
+    for (let day = 1; day <= totalDay; day++) {
+        const d = document.createElement("div");
+        d.className = "calendar-day";
+
+        d.textContent = day;
+
+        // 達成マーク
+        const key = `${year}-${month + 1}-${day}`;
+        if (data.calendar[key]) {
+            const mark = document.createElement("span");
+            mark.className = "success-mark";
+            mark.textContent = "●";
+            d.appendChild(mark);
+        }
+
+        d.onclick = () => openDiary(year, month + 1, day);
+        calendarDays.appendChild(d);
+    }
+}
+
+let now = new Date();
+buildCalendar(now.getFullYear(), now.getMonth());
+
+document.getElementById("calendar-btn").onclick = () => {
+    showScreen("calendar-screen");
+    buildCalendar(now.getFullYear(), now.getMonth());
+};
+
+document.getElementById("close-calendar").onclick = () => {
+    showScreen("main-screen");
+};
+
+/* ======================================================
+    ▼ 日記
+====================================================== */
+
+const diaryText = document.getElementById("diary-text");
+const diaryDateLabel = document.getElementById("diary-date");
+
+let currentDiaryKey = null;
+
+function openDiary(y, m, d) {
+    currentDiaryKey = `${y}-${m}-${d}`;
+    diaryDateLabel.textContent = `${y}/${m}/${d}`;
+
+    diaryText.value = data.diary[currentDiaryKey] || "";
+
+    showScreen("diary-screen");
+}
+
+document.getElementById("save-diary").onclick = () => {
+    data.diary[currentDiaryKey] = diaryText.value;
+    data.calendar[currentDiaryKey] = true; // 成功マーク
+
+    saveData();
+    alert("保存しました！");
+};
+
+document.getElementById("close-diary").onclick = () => {
+    showScreen("calendar-screen");
+    buildCalendar(now.getFullYear(), now.getMonth());
+};
+
+/* ======================================================
+    ▼ 設定画面
+====================================================== */
+
+document.getElementById("settings-btn").onclick = () => {
+    document.getElementById("username-input").value = data.username;
+    showScreen("settings-screen");
+};
+
+document.getElementById("close-settings").onclick = () => {
+    showScreen("main-screen");
+};
+
+/* ▼ ユーザー名変更 */
+document.getElementById("save-username").onclick = () => {
+    const name = document.getElementById("username-input").value;
+    if (!name) return alert("名前を入力してください");
+
+    data.username = name;
+    saveData();
+    updateUI();
+
+    alert("保存しました！");
+};
+
+/* ▼ データ削除 */
+document.getElementById("delete-data").onclick = () => {
+    if (!confirm("本当に全データを削除しますか？")) return;
+
+    localStorage.removeItem("taskquest-data");
+    location.reload();
+};
+
+/* ======================================================
+    ▼ UI更新
+====================================================== */
+function updateUI() {
+    document.getElementById("username-display").textContent = data.username;
+    document.getElementById("points-display").textContent = data.points;
+    document.getElementById("level-display").textContent = data.level;
+    document.getElementById("exp-bar").value = data.exp;
+    document.getElementById("exp-bar").max = data.level * 100;
+
+    updateBossUI();
+    renderTasks();
+}
+
+/* ======================================================
+    ▼ 初期化
+====================================================== */
+updateUI();
+drawAvatar();
