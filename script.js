@@ -1,91 +1,133 @@
 let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
 let points = parseInt(localStorage.getItem('points')) || 0;
-let level = parseInt(localStorage.getItem('level')) || 1;
-let exp = parseInt(localStorage.getItem('exp')) || 0;
-let selectedAvatar = parseInt(localStorage.getItem('selectedAvatar')) || 0;
+let currentLevel = 1;
 
-const avatarImages = ["images/avatar1.png","images/avatar2.png","images/avatar3.png"];
-const categoryColors = { '習慣':'#ff6666', '今日':'#6699ff', 'やること':'#66ff99' };
-
-function addTask() {
-  const input = document.getElementById('taskInput');
-  const category = document.getElementById('categorySelect').value;
-  if(input.value === "") return;
-  tasks.push({ text: input.value, done: false, category: category });
-  input.value = "";
-  saveData();
-  renderTasks();
+function saveTasks() {
+  localStorage.setItem('tasks', JSON.stringify(tasks));
+  localStorage.setItem('points', points);
 }
 
-function toggleDone(index) {
-  const task = tasks[index];
-  task.done = !task.done;
-  points += task.done ? 10 : -10;
-  exp += task.done ? 10 : -10;
-  while(exp >= 50) { level++; exp -= 50; alert("レベルアップ！🎉 レベル:" + level); }
-  saveData();
-  renderTasks();
-  updateSidebar();
-  updateAvatarAppearance();
+function getLevel(totalPoints) {
+  return Math.floor(totalPoints / 10) + 1; // 10Pごとにレベルアップ
+}
+
+function getNextLevelPoints(level) {
+  return level * 10;
 }
 
 function renderTasks() {
-  const taskList = document.getElementById('taskList');
-  taskList.innerHTML = "";
+  const list = document.getElementById('task-list');
+  list.innerHTML = '';
+  tasks.forEach((task, index) => {
+    const li = document.createElement('li');
+    li.className = task.completed ? 'completed' : '';
+    li.innerHTML = `${task.text} (+${task.points}P)`;
 
-  // カテゴリ別に整理
-  ['習慣','今日','やること'].forEach(cat => {
-    const catTasks = tasks.filter(t => t.category === cat);
-    if(catTasks.length > 0) {
-      const header = document.createElement('h3');
-      header.innerText = cat;
-      taskList.appendChild(header);
-      catTasks.forEach((task,i) => {
-        const div = document.createElement('div');
-        div.className = "task" + (task.done ? " done" : "");
-        div.innerText = task.text;
-        div.style.backgroundColor = categoryColors[task.category];
-        div.onclick = () => toggleDone(tasks.indexOf(task));
-        taskList.appendChild(div);
-      });
-    }
+    li.onclick = () => toggleTask(index);
+
+    const editBtn = document.createElement('button');
+    editBtn.textContent = '編集';
+    editBtn.onclick = (e) => {
+      e.stopPropagation();
+      editTask(index);
+    };
+    li.appendChild(editBtn);
+
+    const deleteBtn = document.createElement('button');
+    deleteBtn.textContent = '削除';
+    deleteBtn.onclick = (e) => {
+      e.stopPropagation();
+      deleteTask(index);
+    };
+    li.appendChild(deleteBtn);
+
+    list.appendChild(li);
   });
 }
 
-function updateSidebar() {
-  document.getElementById('points').innerText = points;
-  document.getElementById('level').innerText = level;
-  document.getElementById('exp').innerText = exp + "/50";
+function addTask() {
+  const input = document.getElementById('new-task');
+  const text = input.value.trim();
+  const pointsInput = parseInt(document.getElementById('task-points').value) || 1;
+  if (text === '') return;
+  tasks.push({ text, completed: false, points: pointsInput });
+  input.value = '';
+  document.getElementById('task-points').value = 1;
+  saveTasks();
+  renderTasks();
 }
 
-function toggleSidebar() {
-  document.querySelector('.sidebar-left').classList.toggle('active');
-  document.querySelector('.sidebar-right').classList.toggle('active');
+function toggleTask(index) {
+  const task = tasks[index];
+  task.completed = !task.completed;
+
+  if (task.completed) {
+    points += task.points;
+
+    showPointsEffect(task.points);
+
+    const listItems = document.querySelectorAll('#task-list li');
+    const li = listItems[index];
+    li.classList.add('task-complete');
+    setTimeout(() => li.classList.remove('task-complete'), 500);
+  }
+
+  saveTasks();
+  renderTasks();
+  updateAvatar();
 }
 
-function updateAvatarAppearance() {
-  const avatar = document.getElementById('avatar');
-  avatar.src = avatarImages[selectedAvatar];
-  avatar.classList.remove("level-up");
-  if(level < 3) avatar.style.borderColor = "white";
-  else if(level < 5) avatar.style.borderColor = "gold";
-  else { avatar.style.borderColor = "red"; avatar.classList.add("level-up"); }
+function editTask(index) {
+  const newText = prompt("タスク内容を編集", tasks[index].text);
+  if (newText !== null) {
+    tasks[index].text = newText.trim() || tasks[index].text;
+    const newPoints = parseInt(prompt("タスクポイントを編集", tasks[index].points)) || tasks[index].points;
+    tasks[index].points = newPoints;
+    saveTasks();
+    renderTasks();
+  }
 }
 
-function changeAvatar(index) {
-  selectedAvatar = index;
-  localStorage.setItem('selectedAvatar', selectedAvatar);
-  updateAvatarAppearance();
+function deleteTask(index) {
+  if (confirm("このタスクを削除しますか？")) {
+    tasks.splice(index, 1);
+    saveTasks();
+    renderTasks();
+  }
 }
 
-function saveData() {
-  localStorage.setItem('tasks', JSON.stringify(tasks));
-  localStorage.setItem('points', points);
-  localStorage.setItem('level', level);
-  localStorage.setItem('exp', exp);
+function updateAvatar() {
+  const level = getLevel(points);
+  const avatarImg = `images/avatar${level}.png`;
+  const avatarEl = document.getElementById('hero-avatar');
+  avatarEl.src = avatarImg;
+
+  document.getElementById('points').textContent = `ポイント: ${points}`;
+  document.getElementById('level-text').textContent = `レベル: ${level}`;
+  const nextLevelPoints = getNextLevelPoints(level - 1);
+  let progress = Math.min(points / nextLevelPoints, 1) * 100;
+  document.getElementById('level-bar').style.width = `${progress}%`;
+
+  if (level > currentLevel) {
+    avatarEl.classList.add('level-up');
+    document.body.classList.add('level-flash');
+    setTimeout(() => avatarEl.classList.remove('level-up'), 500);
+    setTimeout(() => document.body.classList.remove('level-flash'), 500);
+    currentLevel = level;
+  }
+}
+
+function showPointsEffect(pointsGained) {
+  const main = document.querySelector('main');
+  const pop = document.createElement('div');
+  pop.className = 'points-pop';
+  pop.textContent = `+${pointsGained}P`;
+  pop.style.left = `${window.innerWidth / 2}px`;
+  pop.style.top = `100px`;
+  main.appendChild(pop);
+  setTimeout(() => pop.remove(), 1000);
 }
 
 // 初期表示
 renderTasks();
-updateSidebar();
-updateAvatarAppearance();
+updateAvatar();
