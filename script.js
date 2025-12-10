@@ -2,7 +2,9 @@ let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
 let points = parseInt(localStorage.getItem('points')) || 0;
 let level = parseInt(localStorage.getItem('level')) || 1;
 let exp = parseInt(localStorage.getItem('exp')) || 0;
+let selectedAvatar = parseInt(localStorage.getItem('selectedAvatar')) || 0;
 
+const avatarImages = ["images/avatar1.png","images/avatar2.png","images/avatar3.png"];
 const categoryColors = { '習慣':'#ff6666', '今日':'#6699ff', 'やること':'#66ff99' };
 
 function addTask() {
@@ -30,13 +32,23 @@ function toggleDone(index) {
 function renderTasks() {
   const taskList = document.getElementById('taskList');
   taskList.innerHTML = "";
-  tasks.forEach((task, i) => {
-    const div = document.createElement('div');
-    div.className = "task" + (task.done ? " done" : "");
-    div.innerText = task.text;
-    div.style.backgroundColor = categoryColors[task.category];
-    div.onclick = () => toggleDone(i);
-    taskList.appendChild(div);
+
+  // カテゴリ別に整理
+  ['習慣','今日','やること'].forEach(cat => {
+    const catTasks = tasks.filter(t => t.category === cat);
+    if(catTasks.length > 0) {
+      const header = document.createElement('h3');
+      header.innerText = cat;
+      taskList.appendChild(header);
+      catTasks.forEach((task,i) => {
+        const div = document.createElement('div');
+        div.className = "task" + (task.done ? " done" : "");
+        div.innerText = task.text;
+        div.style.backgroundColor = categoryColors[task.category];
+        div.onclick = () => toggleDone(tasks.indexOf(task));
+        taskList.appendChild(div);
+      });
+    }
   });
 }
 
@@ -53,10 +65,17 @@ function toggleSidebar() {
 
 function updateAvatarAppearance() {
   const avatar = document.getElementById('avatar');
+  avatar.src = avatarImages[selectedAvatar];
   avatar.classList.remove("level-up");
   if(level < 3) avatar.style.borderColor = "white";
   else if(level < 5) avatar.style.borderColor = "gold";
   else { avatar.style.borderColor = "red"; avatar.classList.add("level-up"); }
+}
+
+function changeAvatar(index) {
+  selectedAvatar = index;
+  localStorage.setItem('selectedAvatar', selectedAvatar);
+  updateAvatarAppearance();
 }
 
 function saveData() {
