@@ -12,6 +12,7 @@
   </header>
 
   <main class="main-container horizontal">
+    <!-- 左パネル -->
     <section class="panel" id="avatar-panel">
       <h2>アバター</h2>
       <img src="images/avatar1.png" alt="キャラクター" id="hero-avatar" class="hero-avatar">
@@ -22,6 +23,25 @@
       <p id="level-text">レベル: 1</p>
     </section>
 
+    <!-- 中央パネル -->
     <section class="panel" id="task-list-panel">
       <h2>タスク一覧</h2>
       <ul id="task-list"></ul>
+    </section>
+
+    <!-- 右パネル -->
+    <section class="panel" id="task-add-panel">
+      <h2>タスク追加</h2>
+      <input type="text" id="new-task" placeholder="タスクを入力">
+      <input type="number" id="task-points" placeholder="ポイント" min="1" value="1">
+      <button onclick="addTask()">追加</button>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 TaskQuest</p>
+  </footer>
+
+  <script src="js/script.js"></script>
+</body>
+</html>
