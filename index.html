@@ -8,31 +8,56 @@
 <body>
   <header>
     <h1>TaskQuest</h1>
-    <div id="level-text">レベル: 1</div>
-    <div id="points">ポイント: 0</div>
-    <div id="level-bar-container">
-      <div id="level-bar"></div>
-    </div>
   </header>
 
-  <main>
-    <section class="panel">
+  <!-- ログイン画面 -->
+  <section class="panel" id="login-panel">
+    <h2>ログイン / 新規登録</h2>
+    <input type="text" id="username" placeholder="ユーザー名">
+    <input type="password" id="password" placeholder="パスワード">
+    <button onclick="registerUser()">新規登録</button>
+    <button onclick="loginUser()">ログイン</button>
+    <p id="login-msg"></p>
+  </section>
+
+  <!-- メイン画面 -->
+  <main style="display:none;">
+    <!-- 左パネル：ヒーロー -->
+    <section class="panel" id="hero-panel">
       <h2>ヒーロー</h2>
       <img id="hero-avatar" src="images/avatar1.png" alt="アバター">
+      <div id="points">ポイント: 0</div>
+      <div id="level-text">レベル: 1</div>
+      <div id="level-bar-container">
+        <div id="level-bar"></div>
+      </div>
     </section>
 
-    <section class="panel" id="task-add-panel">
+    <!-- 中央パネル：タスク -->
+    <section class="panel" id="task-panel">
       <h2>タスク追加</h2>
       <button id="open-task-modal">+ 作成</button>
+      <ul id="task-list"></ul>
     </section>
 
-    <section class="panel">
-      <h2>タスク一覧</h2>
-      <ul id="task-list"></ul>
+    <!-- 右パネル：チーム＋RPG -->
+    <section class="panel" id="team-rpg-panel">
+      <h2>チーム</h2>
+      <div id="team-name">チーム名: なし</div>
+      <div id="team-points">チームポイント: 0</div>
+      <button onclick="createTeam()">チーム作成</button>
+      <button onclick="joinTeam()">チーム参加</button>
+
+      <h2>RPGモード</h2>
+      <div id="exp">経験値: 0</div>
+      <div id="rpg-level-bar-container">
+        <div id="rpg-level-bar"></div>
+      </div>
+      <div id="rpg-monster">モンスター: スライム</div>
     </section>
   </main>
 
-  <!-- モーダル -->
+  <!-- タスクモーダル -->
   <div id="task-modal" class="modal">
     <div class="modal-content">
       <span id="close-task-modal" class="close">&times;</span>
@@ -42,11 +67,6 @@
       <button onclick="addTask(); closeModal();">作成</button>
     </div>
   </div>
-
-  <script src="js/script.js"></script>
-</body>
-</html>
-
 
   <script src="js/script.js"></script>
 </body>
