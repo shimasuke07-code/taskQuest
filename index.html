@@ -2,45 +2,51 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TaskQuest</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
   <header>
     <h1>TaskQuest</h1>
+    <div id="level-text">レベル: 1</div>
+    <div id="points">ポイント: 0</div>
+    <div id="level-bar-container">
+      <div id="level-bar"></div>
+    </div>
   </header>
 
-  <main class="main-container horizontal">
-    <!-- 左パネル -->
-    <section class="panel" id="avatar-panel">
-      <h2>アバター</h2>
-      <img src="images/avatar1.png" alt="キャラクター" id="hero-avatar" class="hero-avatar">
-      <p id="points">ポイント: 0</p>
-      <div class="level-bar-container">
-        <div id="level-bar"></div>
-      </div>
-      <p id="level-text">レベル: 1</p>
+  <main>
+    <section class="panel">
+      <h2>ヒーロー</h2>
+      <img id="hero-avatar" src="images/avatar1.png" alt="アバター">
     </section>
 
-    <!-- 中央パネル -->
-    <section class="panel" id="task-list-panel">
+    <section class="panel" id="task-add-panel">
+      <h2>タスク追加</h2>
+      <button id="open-task-modal">+ 作成</button>
+    </section>
+
+    <section class="panel">
       <h2>タスク一覧</h2>
       <ul id="task-list"></ul>
     </section>
-
-    <!-- 右パネル -->
-    <section class="panel" id="task-add-panel">
-      <h2>タスク追加</h2>
-      <input type="text" id="new-task" placeholder="タスクを入力">
-      <input type="number" id="task-points" placeholder="ポイント" min="1" value="1">
-      <button onclick="addTask()">追加</button>
-    </section>
   </main>
 
-  <footer>
-    <p>&copy; 2025 TaskQuest</p>
-  </footer>
+  <!-- モーダル -->
+  <div id="task-modal" class="modal">
+    <div class="modal-content">
+      <span id="close-task-modal" class="close">&times;</span>
+      <h3>タスクを作成</h3>
+      <input type="text" id="new-task" placeholder="タスクを入力">
+      <input type="number" id="task-points" placeholder="ポイント" min="1" value="1">
+      <button onclick="addTask(); closeModal();">作成</button>
+    </div>
+  </div>
+
+  <script src="js/script.js"></script>
+</body>
+</html>
+
 
   <script src="js/script.js"></script>
 </body>
