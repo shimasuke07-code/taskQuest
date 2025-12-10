@@ -679,3 +679,78 @@ function attackBoss(dmg){
   }
 }
 
+/* ======================================================
+   チームボス
+====================================================== */
+let boss = { name:"巨大ボス", maxHP:1000, hp:1000 };
+
+function drawBoss(){
+  const c = document.getElementById("enemy-canvas");
+  const ctx = c.getContext("2d");
+  ctx.clearRect(0,0,c.width,c.height);
+
+  // 背景
+  const bg = ctx.createLinearGradient(0,0,c.width,c.height);
+  bg.addColorStop(0,"#330000");
+  bg.addColorStop(1,"#550000");
+  ctx.fillStyle = bg;
+  ctx.fillRect(0,0,c.width,c.height);
+
+  // ボス円
+  ctx.fillStyle = "#880000";
+  ctx.beginPath();
+  ctx.arc(c.width/2, c.height/2, 50, 0, Math.PI*2);
+  ctx.fill();
+
+  // HPバー
+  ctx.fillStyle = "#fff";
+  ctx.fillRect(10,10,c.width-20,10);
+  ctx.fillStyle = "#0f0";
+  ctx.fillRect(10,10,(c.width-20)*(boss.hp/boss.maxHP),10);
+
+  // HPテキスト
+  ctx.fillStyle = "#fff";
+  ctx.font = "12px Arial";
+  ctx.fillText(`HP: ${boss.hp}/${boss.maxHP}`, 10, 35);
+
+  requestAnimationFrame(drawBoss);
+}
+requestAnimationFrame(drawBoss);
+
+// 攻撃関数
+function attackBoss(dmg){
+  boss.hp -= dmg;
+  if(boss.hp < 0) boss.hp = 0;
+
+  if(boss.hp === 0){
+    alert("ボスを倒した！おめでとう！");
+    boss.hp = boss.maxHP; // リセット
+  }
+}
+
+/* ======================================================
+   タスク完了で自動ボス攻撃
+====================================================== */
+function addTask(){
+  const input = document.getElementById("task-input");
+  const taskName = input.value.trim();
+  if(!taskName) return;
+
+  const taskDiv = document.createElement("div");
+  taskDiv.className = "task";
+  taskDiv.textContent = taskName + " ";
+
+  const doneBtn = document.createElement("button");
+  doneBtn.textContent = "完了";
+  doneBtn.onclick = ()=>{
+    user.points += 10;         // ポイント加算
+    updateUI();
+    attackBoss(10);            // ボスに自動攻撃10ダメージ
+    taskDiv.remove();           // タスク削除
+  };
+
+  taskDiv.appendChild(doneBtn);
+  document.getElementById("tasks").appendChild(taskDiv);
+  input.value = "";
+}
+document.getElementById("add-task").onclick = addTask;
