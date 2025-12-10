@@ -1,79 +1,94 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <title>TaskQuest</title>
-  <link rel="stylesheet" href="css/style.css">
+<meta charset="UTF-8" />
+<title>TaskQuest</title>
+<link rel="stylesheet" href="style.css" />
 </head>
-<body>
-  <header>
-    <h1>TaskQuest</h1>
-  </header>
 
-  <!-- ログイン画面 -->
-  <section class="panel" id="login-panel">
-    <h2>ログイン / 新規登録</h2>
-    <input type="text" id="username" placeholder="ユーザー名">
-    <input type="password" id="password" placeholder="パスワード">
-    <button onclick="registerUser()">新規登録</button>
-    <button onclick="loginUser()">ログイン</button>
-    <p id="login-msg"></p>
-  </section>
+<body class="night-bg">
 
-  <!-- メイン画面 -->
-  <main style="display:none;">
-    <!-- 左パネル：ヒーロー -->
-    <section class="panel" id="hero-panel">
-      <h2>ヒーロー</h2>
-      <img id="hero-avatar" src="images/avatar1.png" alt="アバター">
-      <div id="points">ポイント: 0</div>
-      <div id="level-text">レベル: 1</div>
-      <div id="level-bar-container">
-        <div id="level-bar"></div>
-      </div>
-    </section>
+<!-- Home -->
+<div id="home-screen" class="home">
+  <img src="logo.png" class="logo" />
+  <h1>TaskQuest</h1>
+  <button onclick="goToApp()" class="main-btn">はじめる</button>
+</div>
 
-    <!-- 中央パネル：タスク -->
-    <section class="panel" id="task-panel">
-      <h2>タスク追加</h2>
-      <div id="calendar-controls">
-        <button onclick="prevDay()">◀</button>
-        <span id="current-date"></span>
-        <button onclick="nextDay()">▶</button>
-      </div>
-      <button id="open-task-modal">+ 作成</button>
-      <ul id="task-list"></ul>
-    </section>
+<!-- Main -->
+<div id="main" class="main hidden">
 
-    <!-- 右パネル：チーム＋RPG -->
-    <section class="panel" id="team-rpg-panel">
-      <h2>チーム</h2>
-      <div id="team-name">チーム名: なし</div>
-      <div id="team-members">メンバー: なし</div>
-      <div id="team-points">チームポイント: 0</div>
-      <button onclick="createTeam()">チーム作成</button>
-      <button onclick="joinTeam()">チーム参加</button>
+  <!-- Left -->
+  <div class="col panel" id="left-panel">
+    <h2>ユーザー</h2>
+    <p id="username-display"></p>
+    <p id="points"></p>
+    <div class="level-box"></div>
 
-      <h2>RPGモード</h2>
-      <div id="exp">経験値: 0</div>
-      <div id="rpg-level-bar-container">
-        <div id="rpg-level-bar"></div>
-      </div>
-      <div id="rpg-monster">モンスター: スライム</div>
-    </section>
-  </main>
+    <h3>アバター</h3>
+    <canvas id="avatar-canvas" width="120" height="150"></canvas>
+    <button onclick="openAvatarEditor()">アバター編集</button>
 
-  <!-- タスクモーダル -->
-  <div id="task-modal" class="modal">
-    <div class="modal-content">
-      <span id="close-task-modal" class="close">&times;</span>
-      <h3>タスクを作成</h3>
-      <input type="text" id="new-task" placeholder="タスクを入力">
-      <input type="number" id="task-points" placeholder="ポイント" min="1" value="1">
-      <button onclick="addTask(); closeModal();">作成</button>
-    </div>
+    <h3>設定</h3>
+    <button onclick="changeName()">名前変更</button>
+    <button onclick="setDay()">昼テーマ</button>
+    <button onclick="setNight()">夜テーマ</button>
+    <button onclick="resetData()">データ削除</button>
   </div>
 
-  <script src="js/script.js"></script>
+  <!-- Center -->
+  <div class="col panel" id="center-panel">
+    <h2>タスク</h2>
+    <button onclick="openTaskMaker()">+作成</button>
+    <div id="task-list"></div>
+
+    <h3>デイリー</h3>
+    <div id="daily-list"></div>
+
+    <h3>ミッション</h3>
+    <button onclick="openMissionMaker()">+追加</button>
+    <div id="mission-list"></div>
+
+    <h3>チーム</h3>
+    <p id="team-display"></p>
+    <button onclick="makeTeam()">チーム作成</button>
+    <button onclick="joinTeam()">参加</button>
+
+    <h3>カレンダー</h3>
+    <div id="calendar"></div>
+  </div>
+
+  <!-- Right -->
+  <div class="col panel" id="right-panel">
+    <h2>バトル</h2>
+
+    <canvas id="enemy-canvas" width="150" height="120"></canvas>
+    <p id="enemy-hp"></p>
+
+    <button onclick="openBattleMenu()">敵を選ぶ</button>
+    <div id="battle-actions"></div>
+  </div>
+</div>
+
+<!-- Avatar Editor -->
+<div id="avatar-editor" class="popup hidden">
+  <h2>アバター編集</h2>
+
+  <label>髪色</label>
+  <input type="color" id="hair-color" />
+
+  <label>目の色</label>
+  <input type="color" id="eye-color" />
+
+  <label>体の色</label>
+  <input type="color" id="body-color" />
+
+  <br />
+  <button onclick="saveAvatar()">保存</button>
+  <button onclick="closeAvatarEditor()">閉じる</button>
+</div>
+
+<script src="script.js"></script>
 </body>
 </html>
+
