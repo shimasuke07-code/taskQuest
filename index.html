@@ -1,94 +1,65 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8" />
-<title>TaskQuest</title>
-<link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <title>TaskQuest</title>
+  <style>
+    body {
+      background-color: #111; /* 背景黒 */
+      color: #fff;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+    canvas {
+      border: 2px solid #fff;
+      background-color: #222;
+      margin-bottom: 10px;
+    }
+    #shop button {
+      margin: 5px 0;
+    }
+    button {
+      cursor: pointer;
+      padding: 5px 10px;
+      background-color: #444;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+    }
+    button:hover {
+      background-color: #666;
+    }
+  </style>
 </head>
+<body>
 
-<body class="night-bg">
-
-<!-- Home -->
-<div id="home-screen" class="home">
-  <img src="logo.png" class="logo" />
   <h1>TaskQuest</h1>
-  <button onclick="goToApp()" class="main-btn">はじめる</button>
-</div>
 
-<!-- Main -->
-<div id="main" class="main hidden">
+  <!-- アバター -->
+  <canvas id="avatar-canvas" width="120" height="120"></canvas>
 
-  <!-- Left -->
-  <div class="col panel" id="left-panel">
-    <h2>ユーザー</h2>
-    <p id="username-display"></p>
-    <p id="points"></p>
-    <div class="level-box"></div>
+  <!-- ポイント表示 -->
+  <div id="points">ポイント: 0</div>
 
-    <h3>アバター</h3>
-    <canvas id="avatar-canvas" width="120" height="150"></canvas>
-    <button onclick="openAvatarEditor()">アバター編集</button>
+  <!-- ショップ -->
+  <button id="open-shop">ショップを開く</button>
+  <div id="shop"></div>
 
-    <h3>設定</h3>
-    <button onclick="changeName()">名前変更</button>
-    <button onclick="setDay()">昼テーマ</button>
-    <button onclick="setNight()">夜テーマ</button>
-    <button onclick="resetData()">データ削除</button>
-  </div>
+  <!-- 敵アニメーション -->
+  <canvas id="enemy-canvas" width="150" height="120" style="border:2px solid #fff; background:#222; margin-top:20px;"></canvas>
+  <div id="enemy-hp">敵HP: 0</div>
+  <button onclick="attack()">攻撃</button>
+  <button onclick="skill()">スキル</button>
+  <button onclick="magic()">魔法</button>
 
-  <!-- Center -->
-  <div class="col panel" id="center-panel">
-    <h2>タスク</h2>
-    <button onclick="openTaskMaker()">+作成</button>
-    <div id="task-list"></div>
+  <!-- ここに他のUI（タスクとか）を追加 -->
 
-    <h3>デイリー</h3>
-    <div id="daily-list"></div>
+  <!-- JSファイル読み込み -->
+  <script src="script.js"></script>
 
-    <h3>ミッション</h3>
-    <button onclick="openMissionMaker()">+追加</button>
-    <div id="mission-list"></div>
-
-    <h3>チーム</h3>
-    <p id="team-display"></p>
-    <button onclick="makeTeam()">チーム作成</button>
-    <button onclick="joinTeam()">参加</button>
-
-    <h3>カレンダー</h3>
-    <div id="calendar"></div>
-  </div>
-
-  <!-- Right -->
-  <div class="col panel" id="right-panel">
-    <h2>バトル</h2>
-
-    <canvas id="enemy-canvas" width="150" height="120"></canvas>
-    <p id="enemy-hp"></p>
-
-    <button onclick="openBattleMenu()">敵を選ぶ</button>
-    <div id="battle-actions"></div>
-  </div>
-</div>
-
-<!-- Avatar Editor -->
-<div id="avatar-editor" class="popup hidden">
-  <h2>アバター編集</h2>
-
-  <label>髪色</label>
-  <input type="color" id="hair-color" />
-
-  <label>目の色</label>
-  <input type="color" id="eye-color" />
-
-  <label>体の色</label>
-  <input type="color" id="body-color" />
-
-  <br />
-  <button onclick="saveAvatar()">保存</button>
-  <button onclick="closeAvatarEditor()">閉じる</button>
-</div>
-
-<script src="script.js"></script>
 </body>
 </html>
 
