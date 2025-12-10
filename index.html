@@ -2,167 +2,74 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>TaskQuest</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskQuest ホームページ兼本体</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- ===== ホームページ画面 ===== -->
+    <div id="home-screen" class="screen">
+        <header>
+            <img src="images/logo.png" alt="TaskQuestロゴ" class="logo">
+            <h1>TaskQuestへようこそ！</h1>
+        </header>
 
-<!-- ===========================
-　　　◆ ホーム画面
-=========================== -->
-<div id="home-screen" class="screen active">
-    <div class="home-container">
-        <img src="images/logo.png" class="home-logo" alt="TaskQuest Logo">
+        <main>
+            <p>タスクをゲーム感覚で管理しよう！ポイントを貯めてアバターをカスタマイズ♪</p>
 
-        <h1 class="home-title">TaskQuest</h1>
+            <button id="start-btn">TaskQuestを始める</button>
+        </main>
 
-        <button id="start-button" class="big-button">はじめる</button>
-    </div>
-</div>
-
-<!-- ===========================
-　　　◆ サインイン（ローカル）
-=========================== -->
-<div id="signin-screen" class="screen">
-    <h1>ユーザー名を入力</h1>
-    <input type="text" id="username-input" placeholder="名前を入力">
-    <button id="save-username">OK</button>
-</div>
-
-<!-- ===========================
-　　　◆ メイン画面
-=========================== -->
-<div id="main-screen" class="screen">
-
-    <!-- 上部バー -->
-    <div class="topbar">
-        <span id="username-display">ヒーロー</span>
-        <button id="open-settings" class="small-button">⚙ 設定</button>
+        <footer>
+            <p>&copy; 2025 TaskQuest</p>
+        </footer>
     </div>
 
-    <!-- 3カラム -->
-    <div class="columns">
+    <!-- ===== TaskQuest 本体画面 ===== -->
+    <div id="taskquest-screen" class="screen" style="display:none;">
+        <header>
+            <img src="images/logo.png" alt="TaskQuestロゴ" class="logo-small">
+            <h1 id="username-display">ヒーロー</h1>
+            <p>ポイント: <span id="points-display">0</span> | Lv.<span id="level-display">1</span></p>
+        </header>
 
-        <!-- ====================
-             ◆ 左：アバター
-        =====================-->
-        <div class="column" id="avatar-column">
-            <h2>アバター</h2>
+        <main>
+            <!-- アバター -->
             <canvas id="avatar-canvas" width="150" height="180"></canvas>
+            <button id="open-avatar-editor">アバター編集</button>
+            <button id="open-shop">ショップ</button>
 
-            <button id="open-avatar-editor" class="small-button">アバター編集</button>
-
-            <div class="status-box">
-                <p>Lv: <span id="level">1</span></p>
-                <p>EXP: <span id="exp">0</span> / <span id="exp-max">100</span></p>
-                <div class="exp-bar"><div id="exp-fill"></div></div>
-                <p>ポイント: <span id="points">0</span></p>
-            </div>
-
-            <button id="open-shop" class="small-button">ショップ</button>
-        </div>
-
-        <!-- ====================
-             ◆ 中央：タスク
-        =====================-->
-        <div class="column" id="task-column">
+            <!-- タスク -->
             <h2>タスク</h2>
+            <ul id="task-list"></ul>
+            <button id="create-task-btn">+ 作成</button>
+            <button id="finish-task-btn" disabled>完了</button>
+            <button id="delete-task-btn" disabled>削除</button>
 
-            <div class="add-box">
-                <input type="text" id="task-input" placeholder="タスクを入力">
-                <button id="add-task" class="small-button">追加</button>
-            </div>
-
-            <div id="tasks" class="task-list"></div>
-
-            <h3>ルーティン</h3>
-            <div id="routines" class="task-list"></div>
-
-            <h3>ミッション</h3>
-            <div id="missions" class="task-list"></div>
-        </div>
-
-        <!-- ====================
-             ◆ 右：ボス戦 / カレンダー / 日記
-        =====================-->
-        <div class="column" id="right-column">
-
-            <!-- ボス戦 -->
-            <h2>ボス</h2>
-            <canvas id="enemy-canvas" width="180" height="140"></canvas>
-            <p>HP: <span id="boss-hp">1000</span> / <span id="boss-max">1000</span></p>
-
-            <hr>
+            <!-- EXP -->
+            <progress id="exp-bar" value="0" max="100"></progress>
 
             <!-- カレンダー -->
-            <h2>カレンダー</h2>
-            <div id="calendar"></div>
+            <button id="calendar-btn">カレンダー</button>
 
-            <hr>
+            <!-- 設定 -->
+            <button id="settings-btn">設定</button>
+        </main>
+    </div>
 
-            <!-- 日記 -->
-            <h2>日記</h2>
-            <textarea id="diary" placeholder="今日のメモ"></textarea>
-            <button id="save-diary" class="small-button">保存</button>
-        </div>
+    <script src="script.js"></script>
 
-    </div> <!-- columns end -->
+    <script>
+        // ホーム画面→TaskQuest切り替え
+        const startBtn = document.getElementById("start-btn");
+        const homeScreen = document.getElementById("home-screen");
+        const taskquestScreen = document.getElementById("taskquest-screen");
 
-</div> <!-- main-screen end -->
-
-
-<!-- ===========================
-　◆ アバター編集画面
-=========================== -->
-<div id="avatar-editor-screen" class="screen">
-    <h1>アバター編集</h1>
-
-    <h3>体の色</h3>
-    <input type="color" id="body-color">
-
-    <h3>髪の色</h3>
-    <input type="color" id="hair-color">
-
-    <h3>アクセサリー</h3>
-    <select id="accessory-select">
-        <option value="none">なし</option>
-        <option value="mantle-red">赤いマント</option>
-        <option value="mantle-blue">青いマント</option>
-        <option value="mantle-green">緑のマント</option>
-    </select>
-
-    <button id="close-avatar-editor">戻る</button>
-</div>
-
-<!-- ===========================
-　◆ ショップ画面
-=========================== -->
-<div id="shop-screen" class="screen">
-    <h1>ショップ</h1>
-    <div id="shop-items"></div>
-    <button id="close-shop">戻る</button>
-</div>
-
-<!-- ===========================
-　◆ 設定画面
-=========================== -->
-<div id="settings-screen" class="screen">
-    <h1>設定</h1>
-
-    <button id="edit-username">名前を変更</button>
-
-    <h3>テーマ</h3>
-    <button class="theme-button" data-theme="space">宇宙</button>
-    <button class="theme-button" data-theme="dark">ダーク</button>
-    <button class="theme-button" data-theme="neon">ネオン</button>
-
-    <h3>データ</h3>
-    <button id="reset-data" class="danger-button">全データ削除</button>
-
-    <button id="close-settings">戻る</button>
-</div>
-
-<!-- JS読み込み -->
-<script src="script.js"></script>
+        startBtn.onclick = () => {
+            homeScreen.style.display = "none";
+            taskquestScreen.style.display = "block";
+        };
+    </script>
 </body>
 </html>
+
