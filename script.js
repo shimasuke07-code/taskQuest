@@ -1,13 +1,10 @@
-// データの初期化
 let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
 let points = parseInt(localStorage.getItem('points')) || 0;
 let level = parseInt(localStorage.getItem('level')) || 1;
 let exp = parseInt(localStorage.getItem('exp')) || 0;
 
-// カテゴリごとの色
-const categoryColors = { '習慣':'#ff9999', '今日':'#99ccff', 'やること':'#99ff99' };
+const categoryColors = { '習慣':'#ff6666', '今日':'#6699ff', 'やること':'#66ff99' };
 
-// タスク追加
 function addTask() {
   const input = document.getElementById('taskInput');
   const category = document.getElementById('categorySelect').value;
@@ -18,7 +15,6 @@ function addTask() {
   renderTasks();
 }
 
-// タスク完了切替
 function toggleDone(index) {
   const task = tasks[index];
   task.done = !task.done;
@@ -31,7 +27,6 @@ function toggleDone(index) {
   updateAvatarAppearance();
 }
 
-// タスク表示
 function renderTasks() {
   const taskList = document.getElementById('taskList');
   taskList.innerHTML = "";
@@ -45,28 +40,25 @@ function renderTasks() {
   });
 }
 
-// サイドバー更新
 function updateSidebar() {
   document.getElementById('points').innerText = points;
   document.getElementById('level').innerText = level;
   document.getElementById('exp').innerText = exp + "/50";
 }
 
-// サイドバー開閉
 function toggleSidebar() {
   document.querySelector('.sidebar-left').classList.toggle('active');
   document.querySelector('.sidebar-right').classList.toggle('active');
 }
 
-// アバター見た目変化
 function updateAvatarAppearance() {
   const avatar = document.getElementById('avatar');
+  avatar.classList.remove("level-up");
   if(level < 3) avatar.style.borderColor = "white";
   else if(level < 5) avatar.style.borderColor = "gold";
-  else avatar.style.borderColor = "red";
+  else { avatar.style.borderColor = "red"; avatar.classList.add("level-up"); }
 }
 
-// localStorageに保存
 function saveData() {
   localStorage.setItem('tasks', JSON.stringify(tasks));
   localStorage.setItem('points', points);
