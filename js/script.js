@@ -437,3 +437,179 @@ function resetData(){
   localStorage.removeItem("taskquest_"+currentUser);
   location.reload();
 }
+
+/* ======================================================
+   アバターアニメーション
+====================================================== */
+
+let avatarFrame = 0;
+
+function animateAvatar(){
+  avatarFrame++;
+
+  const c = document.getElementById("avatar-canvas");
+  const ctx = c.getContext("2d");
+  ctx.clearRect(0,0,c.width,c.height);
+
+  const breath = Math.sin(avatarFrame / 20) * 2;  // 呼吸
+  const hairMove = Math.sin(avatarFrame / 10) * 1; // 髪ゆれ
+
+  /* --- 体（呼吸で上下に動く） --- */
+  ctx.fillStyle = avatar.bodyColor;
+  ctx.fillRect(45,60 + breath,30,50);
+
+  /* --- 顔 --- */
+  ctx.fillRect(45,30 + breath,30,30);
+
+  /* --- 目（まばたき） --- */
+  let blink = (avatarFrame % 120 < 5); // ちょっと閉じる
+  ctx.fillStyle = avatar.eyeColor;
+  if(!blink){
+    ctx.fillRect(55,45 + breath,5,5);
+    ctx.fillRect(65,45 + breath,5,5);
+  } else {
+    ctx.fillRect(55,47 + breath,5,1);
+    ctx.fillRect(65,47 + breath,5,1);
+  }
+
+  /* --- 髪（左右に揺れる） --- */
+  ctx.fillStyle = avatar.hairColor;
+  if(avatar.hairType === "short"){
+    ctx.fillRect(40 + hairMove,25,40,10);
+  } else if(avatar.hairType === "long"){
+    ctx.fillRect(40 + hairMove,25,40,25);
+  } else if(avatar.hairType === "twin"){
+    ctx.fillRect(40 + hairMove,25,40,10);
+    ctx.fillRect(30,35,10,20);
+    ctx.fillRect(80,35,10,20);
+  }
+
+  /* --- アクセサリー --- */
+  ctx.fillStyle = avatar.accessoryColor;
+  if(avatar.accessory === "crown"){
+    ctx.fillRect(48 + hairMove,22,24,6);
+  }
+
+  requestAnimationFrame(animateAvatar);
+}
+
+requestAnimationFrame(animateAvatar);
+
+/* ======================================================
+   敵アニメーション
+====================================================== */
+
+let enemyFrame = 0;
+let enemyShake = 0;
+
+function animateEnemy(){
+  enemyFrame++;
+
+  const c = document.getElementById("enemy-canvas");
+  const ctx = c.getContext("2d");
+  ctx.clearRect(0,0,c.width,c.height);
+
+  if(!currentEnemy) return requestAnimationFrame(animateEnemy);
+
+  // 攻撃で揺れる
+  let shake = Math.sin(enemyFrame / 5) * enemyShake;
+
+  // 本体
+  ctx.fillStyle = currentEnemy.color;
+  ctx.beginPath();
+  ctx.arc(75 + shake,60,40,0,Math.PI*2);
+  ctx.fill();
+
+  // ダメージ時フラッシュ
+  if(enemyShake > 0){
+    ctx.fillStyle = "rgba(255,0,0,0.5)";
+    ctx.beginPath();
+    ctx.arc(75,60,40,0,Math.PI*2);
+    ctx.fill();
+    enemyShake *= 0.9;
+  }
+
+  document.getElementById("enemy-hp").textContent =
+    `${currentEnemy.name} HP: ${currentEnemy.hp}/${currentEnemy.max}`;
+
+  requestAnimationFrame(animateEnemy);
+}
+
+requestAnimationFrame(animateEnemy);
+
+/* --- バトル関数を修正 --- */
+function attack(){
+  const dmg = 10 + Math.floor(Math.random()*5);
+  currentEnemy.hp -= dmg;
+  enemyShake = 5; // 攻撃時揺れる
+
+  if(currentEnemy.hp <= 0){
+    finishBattle();
+    return;
+  }
+  enemyAttack();
+}
+
+function skill(){
+  const dmg = 20 + Math.floor(Math.random()*10);
+  currentEnemy.hp -= dmg;
+  enemyShake = 7;
+
+  if(currentEnemy.hp <= 0){
+    finishBattle();
+    return;
+  }
+  enemyAttack();
+}
+
+function magic(){
+  const dmg = 30;
+  currentEnemy.hp -= dmg;
+  enemyShake = 10;
+
+  if(currentEnemy.hp <= 0){
+    finishBattle();
+    return;
+  }
+  enemyAttack();
+}
+
+/* ======================================================
+   パーツショップ
+====================================================== */
+
+const shopItems = [
+  {id:1,name:"赤い帽子",type:"hat",color:"#ff0000",price:50},
+  {id:2,name:"青い髪飾り",type:"accessory",color:"#0000ff",price:100},
+  {id:3,name:"緑のマント",type:"cape",color:"#00ff00",price:150}
+];
+
+function openShop(){
+  const shopDiv = document.getElementById("shop");
+  shopDiv.innerHTML = "<h3>パーツショップ</h3>";
+
+  shopItems.forEach(item=>{
+    const btn = document.createElement("button");
+    btn.textContent = `${item.name} - ${item.price}pt`;
+    btn.onclick = ()=>{
+      if(user.points >= item.price){
+        user.points -= item.price;
+        avatar[item.type] = item.color;
+        alert(`${item.name} をゲット！`);
+        updateUI();
+      } else {
+        alert("ポイントが足りません！");
+      }
+    };
+    shopDiv.appendChild(btn);
+    shopDiv.appendChild(document.createElement("br"));
+  });
+}
+
+// UI更新にポイント表示追加
+function updateUI(){
+  document.getElementById("points").textContent = `ポイント: ${user.points}`;
+}
+
+// ショップ用ボタン
+document.getElementById("open-shop").onclick = openShop;
