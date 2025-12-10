@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Habiticaシンプル版</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <button class="toggle-btn" onclick="toggleSidebar()">☰ メニュー</button>
+
+  <div class="sidebar-left">
+    <h2>キャラクター</h2>
+    <img src="images/avatar.png" alt="キャラクター" class="avatar" id="avatar">
+    <p>名前: <span id="username">たろう</span></p>
+    <p>レベル: <span id="level">1</span></p>
+    <p>HP: 100</p>
+    <p>経験値: <span id="exp">0/50</span></p>
+  </div>
+
+  <div class="main">
+    <h2>今日のタスク</h2>
+    <div id="taskList"></div>
+
+    <input type="text" id="taskInput" placeholder="新しいタスク">
+    <select id="categorySelect">
+      <option value="習慣">習慣</option>
+      <option value="今日">今日</option>
+      <option value="やること">やること</option>
+    </select>
+    <button onclick="addTask()">追加</button>
+  </div>
+
+  <div class="sidebar-right">
+    <h2>ポイント</h2>
+    <p id="points">0</p>
+  </div>
+
+  <script src="js/script.js"></script>
+</body>
+</html>
