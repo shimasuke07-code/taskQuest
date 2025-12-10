@@ -1,79 +1,47 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TaskQuest ホームページ兼本体</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TaskQuest</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- ===== ホームページ画面 ===== -->
-    <div id="home-screen" class="screen">
-        <header>
-            <img src="images/logo.png" alt="TaskQuestロゴ" class="logo">
-            <h1>TaskQuestへようこそ！</h1>
-        </header>
+<div class="header">
+    <h1>TaskQuest</h1>
+    <span id="username-display">ヒーロー</span>
+    <span id="points-display">50</span>ポイント | Lv.<span id="level-display">1</span>
+</div>
 
-        <main>
-            <p>タスクをゲーム感覚で管理しよう！ポイントを貯めてアバターをカスタマイズ♪</p>
-            <button id="start-btn">TaskQuestを始める</button>
-        </main>
-
-        <footer>
-            <p>&copy; 2025 TaskQuest</p>
-        </footer>
+<div class="main">
+    <div class="tasks">
+        <h2>タスク</h2>
+        <ul id="task-list"></ul>
+        <button id="create-task-btn">+作成</button>
+        <button id="finish-task-btn" disabled>完了</button>
+        <button id="delete-task-btn" disabled>削除</button>
     </div>
 
-    <!-- ===== TaskQuest 本体画面 ===== -->
-    <div id="taskquest-screen" class="screen" style="display:none;">
-        <header>
-            <img src="images/logo.png" alt="TaskQuestロゴ" class="logo-small">
-            <h1 id="username-display">ヒーロー</h1>
-            <p>ポイント: <span id="points-display">0</span> | Lv.<span id="level-display">1</span></p>
-        </header>
-
-        <main>
-            <div class="left-panel">
-                <!-- アバター -->
-                <canvas id="avatar-canvas" width="150" height="180"></canvas>
-                <button id="open-avatar-editor">アバター編集</button>
-                <button id="open-shop">ショップ</button>
-            </div>
-
-            <div class="center-panel">
-                <!-- タスク -->
-                <h2>タスク</h2>
-                <ul id="task-list"></ul>
-                <button id="create-task-btn">+ 作成</button>
-                <button id="finish-task-btn" disabled>完了</button>
-                <button id="delete-task-btn" disabled>削除</button>
-
-                <!-- EXP -->
-                <progress id="exp-bar" value="0" max="100"></progress>
-            </div>
-
-            <div class="right-panel">
-                <!-- カレンダー -->
-                <button id="calendar-btn">カレンダー</button>
-
-                <!-- 設定 -->
-                <button id="settings-btn">設定</button>
-            </div>
-        </main>
+    <div class="avatar">
+        <h2>アバター</h2>
+        <canvas id="avatar-canvas" width="160" height="160"></canvas>
+        <button id="open-avatar-editor">アバター編集</button>
+        <button id="open-shop">ショップ</button>
     </div>
 
-    <script src="script.js"></script>
-    <script>
-        // ホーム画面→TaskQuest切り替え
-        const startBtn = document.getElementById("start-btn");
-        const homeScreen = document.getElementById("home-screen");
-        const taskquestScreen = document.getElementById("taskquest-screen");
+    <div class="other">
+        <h2>その他</h2>
+        <button id="calendar-btn">カレンダー</button>
+        <button id="settings-btn">設定</button>
+    </div>
+</div>
 
-        startBtn.onclick = () => {
-            homeScreen.style.display = "none";
-            taskquestScreen.style.display = "flex";
-        };
-    </script>
+<!-- アバター編集・ショップ用モーダル -->
+<div id="modal" class="modal">
+    <div class="modal-content" id="modal-content"></div>
+</div>
+
+<script src="script.js"></script>
 </body>
 </html>
 
