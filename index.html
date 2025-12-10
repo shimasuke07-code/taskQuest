@@ -36,6 +36,11 @@
     <!-- 中央パネル：タスク -->
     <section class="panel" id="task-panel">
       <h2>タスク追加</h2>
+      <div id="calendar-controls">
+        <button onclick="prevDay()">◀</button>
+        <span id="current-date"></span>
+        <button onclick="nextDay()">▶</button>
+      </div>
       <button id="open-task-modal">+ 作成</button>
       <ul id="task-list"></ul>
     </section>
@@ -44,6 +49,7 @@
     <section class="panel" id="team-rpg-panel">
       <h2>チーム</h2>
       <div id="team-name">チーム名: なし</div>
+      <div id="team-members">メンバー: なし</div>
       <div id="team-points">チームポイント: 0</div>
       <button onclick="createTeam()">チーム作成</button>
       <button onclick="joinTeam()">チーム参加</button>
