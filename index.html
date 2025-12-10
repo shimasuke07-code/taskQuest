@@ -16,7 +16,6 @@
 
         <main>
             <p>タスクをゲーム感覚で管理しよう！ポイントを貯めてアバターをカスタマイズ♪</p>
-
             <button id="start-btn">TaskQuestを始める</button>
         </main>
 
@@ -34,31 +33,36 @@
         </header>
 
         <main>
-            <!-- アバター -->
-            <canvas id="avatar-canvas" width="150" height="180"></canvas>
-            <button id="open-avatar-editor">アバター編集</button>
-            <button id="open-shop">ショップ</button>
+            <div class="left-panel">
+                <!-- アバター -->
+                <canvas id="avatar-canvas" width="150" height="180"></canvas>
+                <button id="open-avatar-editor">アバター編集</button>
+                <button id="open-shop">ショップ</button>
+            </div>
 
-            <!-- タスク -->
-            <h2>タスク</h2>
-            <ul id="task-list"></ul>
-            <button id="create-task-btn">+ 作成</button>
-            <button id="finish-task-btn" disabled>完了</button>
-            <button id="delete-task-btn" disabled>削除</button>
+            <div class="center-panel">
+                <!-- タスク -->
+                <h2>タスク</h2>
+                <ul id="task-list"></ul>
+                <button id="create-task-btn">+ 作成</button>
+                <button id="finish-task-btn" disabled>完了</button>
+                <button id="delete-task-btn" disabled>削除</button>
 
-            <!-- EXP -->
-            <progress id="exp-bar" value="0" max="100"></progress>
+                <!-- EXP -->
+                <progress id="exp-bar" value="0" max="100"></progress>
+            </div>
 
-            <!-- カレンダー -->
-            <button id="calendar-btn">カレンダー</button>
+            <div class="right-panel">
+                <!-- カレンダー -->
+                <button id="calendar-btn">カレンダー</button>
 
-            <!-- 設定 -->
-            <button id="settings-btn">設定</button>
+                <!-- 設定 -->
+                <button id="settings-btn">設定</button>
+            </div>
         </main>
     </div>
 
     <script src="script.js"></script>
-
     <script>
         // ホーム画面→TaskQuest切り替え
         const startBtn = document.getElementById("start-btn");
@@ -67,7 +71,7 @@
 
         startBtn.onclick = () => {
             homeScreen.style.display = "none";
-            taskquestScreen.style.display = "block";
+            taskquestScreen.style.display = "flex";
         };
     </script>
 </body>
