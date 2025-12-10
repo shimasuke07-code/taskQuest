@@ -1,114 +1,63 @@
-/* 全体 */
 body {
+  background-color: #111;
+  color: #fff;
+  font-family: Arial, sans-serif;
   margin: 0;
-  font-family: 'Press Start 2P', cursive;
-  background: linear-gradient(135deg, #1b1b2f, #3a3a5c);
-  color: white;
+  padding: 0;
+}
+
+header {
   display: flex;
-  min-height: 100vh;
-  transition: all 0.3s;
-}
-
-/* サイドバー */
-.sidebar-left, .sidebar-right {
-  flex: 0 0 200px;
-  background-color: rgba(40,40,70,0.9);
+  justify-content: space-between;
+  align-items: center;
   padding: 20px;
-  box-sizing: border-box;
-  border-radius: 15px;
-  box-shadow: 0 0 15px rgba(0,0,0,0.5);
-  transition: transform 0.3s;
+  background-color: #222;
+  box-shadow: 0 0 10px #0ff;
 }
 
-/* メイン */
-.main {
-  flex: 1;
-  padding: 20px;
-  box-sizing: border-box;
-  min-width: 300px;
-}
-
-/* アバター */
-.avatar-select img {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  margin: 5px;
-  border: 2px solid white;
-  cursor: pointer;
-  transition: transform 0.2s, border-color 0.2s;
-}
-.avatar-select img:hover {
-  transform: scale(1.1);
-  border-color: gold;
-}
-
-/* タスク */
-.task {
-  padding: 10px;
-  margin: 10px 0;
-  border-radius: 10px;
-  cursor: pointer;
-  color: white;
-  transition: all 0.2s;
-}
-.task.done {
-  text-decoration: line-through;
-  opacity: 0.6;
-}
-
-/* ボタン */
-button {
-  background: #ffcc33;
-  color: #1b1b2f;
-  border: none;
-  border-radius: 10px;
-  padding: 10px 20px;
-  cursor: pointer;
+header nav a {
+  color: #0ff;
+  margin-left: 15px;
+  text-decoration: none;
   font-weight: bold;
-  transition: all 0.2s;
-}
-button:hover {
-  background: #ffd633;
-  transform: scale(1.05);
 }
 
-/* タブ切り替えボタン */
-.toggle-btn {
-  display: none;
-  position: fixed;
-  top: 10px;
-  left: 10px;
-  z-index: 1000;
-  background-color: #44446a;
-  color: white;
-  border: none;
-  padding: 10px;
-  font-size: 18px;
+header nav a:hover {
+  color: #0aa;
+}
+
+.hero {
+  text-align: center;
+  padding: 50px 20px;
+}
+
+.hero-avatar {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  border: 3px solid #0ff;
+  margin: 20px 0;
+}
+
+button {
+  padding: 10px 20px;
   border-radius: 5px;
+  border: none;
+  background-color: #0ff;
+  color: #111;
+  font-weight: bold;
   cursor: pointer;
 }
 
-/* レベルアップ時アニメーション */
-.avatar.level-up {
-  animation: glow 1s ease infinite alternate;
-}
-@keyframes glow {
-  from { box-shadow: 0 0 10px gold; }
-  to { box-shadow: 0 0 25px gold; }
+button:hover {
+  background-color: #0aa;
 }
 
-/* レスポンシブ */
-@media screen and (max-width: 768px) {
-  body { flex-direction: column; }
-  .toggle-btn { display: block; }
-  .sidebar-left, .sidebar-right {
-    width: 100%;
-    display: none;
-    transform: translateY(-100%);
-  }
-  .sidebar-left.active, .sidebar-right.active { display: block; transform: translateY(0); }
-  .main { width: 100%; }
+footer {
+  text-align: center;
+  padding: 10px;
+  background-color: #222;
+  box-shadow: 0 -5px 10px #0ff;
 }
 
   .sidebar-left.active, .sidebar-right.active { display: block; transform: translateY(0); }
