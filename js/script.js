@@ -442,27 +442,32 @@ function resetData(){
    アバターアニメーション
 ====================================================== */
 
-let avatarFrame = 0;
-
 function animateAvatar(){
   avatarFrame++;
 
   const c = document.getElementById("avatar-canvas");
   const ctx = c.getContext("2d");
-  ctx.clearRect(0,0,c.width,c.height);
 
-  const breath = Math.sin(avatarFrame / 20) * 2;  // 呼吸
-  const hairMove = Math.sin(avatarFrame / 10) * 1; // 髪ゆれ
+  // 背景グラデーション
+  const bg = ctx.createLinearGradient(0,0,c.width,c.height);
+  bg.addColorStop(0,"#111");
+  bg.addColorStop(1,"#222");
+  ctx.fillStyle = bg;
+  ctx.fillRect(0,0,c.width,c.height);
 
-  /* --- 体（呼吸で上下に動く） --- */
+  // アバター体呼吸
+  const breath = Math.sin(avatarFrame / 20) * 2;  
+  const hairMove = Math.sin(avatarFrame / 10) * 1; 
+
+  // 体
   ctx.fillStyle = avatar.bodyColor;
   ctx.fillRect(45,60 + breath,30,50);
 
-  /* --- 顔 --- */
+  // 顔
   ctx.fillRect(45,30 + breath,30,30);
 
-  /* --- 目（まばたき） --- */
-  let blink = (avatarFrame % 120 < 5); // ちょっと閉じる
+  // 目（まばたき）
+  let blink = (avatarFrame % 120 < 5);
   ctx.fillStyle = avatar.eyeColor;
   if(!blink){
     ctx.fillRect(55,45 + breath,5,5);
@@ -472,7 +477,7 @@ function animateAvatar(){
     ctx.fillRect(65,47 + breath,5,1);
   }
 
-  /* --- 髪（左右に揺れる） --- */
+  // 髪
   ctx.fillStyle = avatar.hairColor;
   if(avatar.hairType === "short"){
     ctx.fillRect(40 + hairMove,25,40,10);
@@ -484,15 +489,19 @@ function animateAvatar(){
     ctx.fillRect(80,35,10,20);
   }
 
-  /* --- アクセサリー --- */
+  // アクセサリー
   ctx.fillStyle = avatar.accessoryColor;
   if(avatar.accessory === "crown"){
     ctx.fillRect(48 + hairMove,22,24,6);
   }
 
+  // 枠
+  ctx.strokeStyle = "#fff";
+  ctx.lineWidth = 2;
+  ctx.strokeRect(0,0,c.width,c.height);
+
   requestAnimationFrame(animateAvatar);
 }
-
 requestAnimationFrame(animateAvatar);
 
 /* ======================================================
@@ -613,3 +622,60 @@ function updateUI(){
 
 // ショップ用ボタン
 document.getElementById("open-shop").onclick = openShop;
+
+/* ======================================================
+   チームボス戦
+====================================================== */
+
+let boss = {
+  name: "巨大ボス",
+  maxHP: 1000,
+  hp: 1000,
+  color: "#880000"
+};
+
+function drawBoss(){
+  const c = document.getElementById("enemy-canvas");
+  const ctx = c.getContext("2d");
+
+  ctx.clearRect(0,0,c.width,c.height);
+
+  // 背景
+  const bg = ctx.createLinearGradient(0,0,c.width,c.height);
+  bg.addColorStop(0,"#330000");
+  bg.addColorStop(1,"#550000");
+  ctx.fillStyle = bg;
+  ctx.fillRect(0,0,c.width,c.height);
+
+  // ボス円
+  ctx.fillStyle = boss.color;
+  ctx.beginPath();
+  ctx.arc(c.width/2, c.height/2, 50, 0, Math.PI*2);
+  ctx.fill();
+
+  // HPバー
+  ctx.fillStyle = "#fff";
+  ctx.fillRect(10,10,c.width-20,10);
+  ctx.fillStyle = "#0f0";
+  ctx.fillRect(10,10,(c.width-20)*(boss.hp/boss.maxHP),10);
+
+  // HPテキスト
+  ctx.fillStyle = "#fff";
+  ctx.font = "12px Arial";
+  ctx.fillText(`HP: ${boss.hp}/${boss.maxHP}`, 10, 35);
+
+  requestAnimationFrame(drawBoss);
+}
+requestAnimationFrame(drawBoss);
+
+// 攻撃関数
+function attackBoss(dmg){
+  boss.hp -= dmg;
+  if(boss.hp < 0) boss.hp = 0;
+
+  if(boss.hp === 0){
+    alert("ボスを倒した！おめでとう！");
+    boss.hp = boss.maxHP; // リセット
+  }
+}
+
