@@ -1,3 +1,4 @@
+/* 背景グラデーション */
 body {
   background: linear-gradient(270deg, #111, #222, #333, #111);
   background-size: 800% 800%;
@@ -13,6 +14,7 @@ body {
   100% {background-position: 0% 50%;}
 }
 
+/* ヘッダー */
 header {
   background-color: rgba(34,34,34,0.8);
   padding: 15px 20px;
@@ -21,6 +23,7 @@ header {
   border-bottom: 2px solid #0ff;
 }
 
+/* 横3分割 */
 .main-container.horizontal {
   display: flex;
   flex-direction: row;
@@ -32,7 +35,7 @@ header {
   border-right: 1px solid #0ff;
   padding: 15px;
   overflow-y: auto;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0,0,0,0.5);
   border-radius: 10px;
   box-shadow: 0 0 15px #0ff;
 }
@@ -41,6 +44,7 @@ header {
   border-right: none;
 }
 
+/* アバター */
 .hero-avatar {
   width: 120px;
   height: 120px;
@@ -105,6 +109,7 @@ header {
   background-color: #0aa;
 }
 
+/* タスク追加フォーム */
 #new-task, #task-points {
   padding: 5px;
   margin: 5px 0;
@@ -135,7 +140,7 @@ footer {
   box-shadow: 0 -5px 10px #0ff;
 }
 
-/* レスポンシブ対応 */
+/* スマホ対応：縦並び */
 @media (max-width: 768px) {
   .main-container.horizontal {
     flex-direction: column;
@@ -157,3 +162,4 @@ footer {
     height: 100px;
   }
 }
+
