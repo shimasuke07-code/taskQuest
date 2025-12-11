@@ -6,79 +6,60 @@
 <title>TaskQuest</title>
 <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-
-<!-- ヘッダー（ロゴ + ユーザー名 + ステータス） -->
-<header class="header">
-    <div class="header-left">
-        <img src="images/logo.png" class="header-logo" alt="TaskQuest Logo">
-        <span id="username-display" class="username">ヒーロー</span>
-    </div>
-
-    <div class="header-right">
-        <span id="points-display">50</span> ポイント |
-        Lv.<span id="level-display">1</span>
-    </div>
-</header>
-
-<!-- メイン3カラム -->
-<div class="main-grid">
-
-    <!-- 左：プロフィール（アバター + 名前変更 + その他） -->
-    <section class="profile">
-        <h2>プロフィール</h2>
-
-        <div class="avatar-circle">
-            <canvas id="avatar-canvas" width="160" height="160"></canvas>
-        </div>
-
-        <button id="open-avatar-editor" class="btn">アバター編集</button>
-        <button id="open-shop" class="btn">ショップ</button>
-
-        <h3>ユーザー名変更</h3>
-        <input id="username-input" type="text" placeholder="新しい名前">
-        <button id="change-username-btn" class="btn-small">変更</button>
-    </section>
-
-    <!-- 中央：タスク管理 -->
-    <section class="tasks">
-        <h2>タスク管理</h2>
-
-        <div class="task-input-row">
-            <input id="task-input" type="text" placeholder="タスクを入力">
-            <button id="create-task-btn" class="btn-create">+ 作成</button>
-        </div>
-
-        <ul id="task-list"></ul>
-
-        <div class="task-btn-row">
-            <button id="finish-task-btn" class="btn" disabled>完了</button>
-            <button id="delete-task-btn" class="btn-danger" disabled>削除</button>
-        </div>
-    </section>
-
-    <!-- 右：モンスター / その他メニュー -->
-    <section class="monster">
-        <h2>モンスター</h2>
-
-        <div class="monster-box">
-            <p>（今後追加予定）</p>
-        </div>
-
-        <h2>その他</h2>
-        <button id="calendar-btn" class="btn">カレンダー</button>
-        <button id="settings-btn" class="btn">設定</button>
-    </section>
-
+<div class="header">
+    <h1>TaskQuest</h1>
+    <span id="username-display">ヒーロー</span>
+    <span id="points-display">50</span>ポイント | Lv.<span id="level-display">1</span>
 </div>
 
-<!-- モーダル（アバター編集 / ショップ） -->
-<div id="modal" class="modal">
-    <div id="modal-content" class="modal-content"></div>
+<div class="main">
+    <div class="profile">
+        <h2>プロフィール</h2>
+        <canvas id="avatar-canvas" width="160" height="160"></canvas>
+        <button id="open-avatar-editor">アバター編集</button>
+        <button id="open-shop">ショップ</button>
+    </div>
+
+    <div class="tasks">
+        <h2>タスク管理</h2>
+        <div class="task-input">
+            <input type="text" id="new-task" placeholder="タスクを入力">
+            <button id="create-task-btn">+作成</button>
+        </div>
+        <ul id="task-list"></ul>
+        <button id="finish-task-btn" disabled>完了</button>
+        <button id="delete-task-btn" disabled>削除</button>
+    </div>
+
+    <div class="other">
+        <h2>モンスター・その他</h2>
+        <button id="calendar-btn">カレンダー</button>
+        <button id="settings-btn">設定</button>
+    </div>
+</div>
+
+<!-- アバター編集モーダル -->
+<div id="avatar-modal" class="modal">
+  <div class="modal-content">
+    <h2>アバター編集</h2>
+    <canvas id="edit-avatar-canvas" width="160" height="160"></canvas>
+    <div id="parts-container"></div>
+    <button id="save-avatar-btn">保存</button>
+    <button id="close-avatar-btn">閉じる</button>
+  </div>
+</div>
+
+<!-- ショップモーダル -->
+<div id="shop-modal" class="modal">
+  <div class="modal-content">
+    <h2>ショップ</h2>
+    <p>ポイント: <span id="shop-points">50</span></p>
+    <div id="shop-items-container"></div>
+    <button id="close-shop-btn">閉じる</button>
+  </div>
 </div>
 
 <script src="script.js"></script>
-
 </body>
 </html>
