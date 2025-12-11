@@ -13,51 +13,52 @@ body {
     align-items: center;
 }
 
-.logo {
-    height: 40px;
-}
-
 .main {
     display: flex;
     justify-content: space-around;
     padding: 20px;
 }
 
-.profile, .tasks, .monster {
+.profile, .tasks, .other {
     background-color: #1a1a2e;
-    padding: 15px;
-    border-radius: 15px;
+    padding: 10px;
+    border-radius: 10px;
     width: 30%;
-}
-
-button {
-    margin: 5px 0;
-    padding: 8px 12px;
-    border: none;
-    border-radius: 20px;
-    cursor: pointer;
-    background-color: #4444ff;
-    color: white;
-}
-
-button:disabled {
-    background-color: #555;
-    cursor: not-allowed;
-}
-
-input {
-    padding: 8px 12px;
-    border-radius: 20px;
-    border: none;
-    width: 70%;
-    margin-right: 5px;
 }
 
 canvas {
     background-color: #111;
-    display: block;
-    margin: 10px 0;
     border-radius: 50%;
+    display: block;
+    margin: 10px auto;
+}
+
+.task-input {
+    display: flex;
+    margin-bottom: 10px;
+}
+.task-input input {
+    flex: 1;
+    padding: 10px;
+    border-radius: 20px;
+    border: none;
+    margin-right: 5px;
+}
+button {
+    margin: 5px 0;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    background-color: #333366;
+    color: white;
+}
+button:hover {
+    background-color: #5555aa;
+}
+button:disabled {
+    background-color: #555;
+    cursor: not-allowed;
 }
 
 /* モーダル */
@@ -69,7 +70,6 @@ canvas {
     width: 100%; height: 100%;
     background-color: rgba(0,0,0,0.8);
 }
-
 .modal-content {
     background-color: #222;
     margin: 10% auto;
@@ -79,14 +79,4 @@ canvas {
     color: white;
 }
 
-/* ホーム画面 */
-.home-container {
-    text-align: center;
-    padding: 50px;
-}
-
-.home-container button {
-    font-size: 18px;
-    padding: 10px 20px;
-}
 
