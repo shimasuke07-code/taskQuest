@@ -1,117 +1,150 @@
-// プレイヤーデータ
-let data = {
-  points: 50,
-  level: 1,
-  username: "ヒーロー"
+// データ管理
+let data = { points: 50, level: 1 };
+
+// モンスターデータ
+let monster = { level: 1, exp: 0, nextLevelExp: 50 };
+
+// アバターパーツ
+let avatarParts = {
+    head: { color: "#ffcc00", size: 30 },
+    body: { color: "#00ccff", width: 40, height: 60 },
+    eyes: { color: "#000", size: 5 }
 };
 
-// タスク管理
+// ショップパーツ
+let shopItems = [
+    { type: "head", color: "#ff0000", price: 20 },
+    { type: "head", color: "#00ff00", price: 20 },
+    { type: "body", color: "#0000ff", price: 30 },
+    { type: "body", color: "#ffff00", price: 30 }
+];
+
+// Canvas参照
+const avatarCanvas = document.getElementById("avatar-canvas");
+const avatarCtx = avatarCanvas.getContext("2d");
+const monsterCanvas = document.getElementById("monster-canvas");
+const monsterCtx = monsterCanvas.getContext("2d");
+
+// 描画関数
+function drawAvatar() {
+    avatarCtx.clearRect(0,0,avatarCanvas.width, avatarCanvas.height);
+    avatarCtx.fillStyle = avatarParts.head.color;
+    avatarCtx.beginPath();
+    avatarCtx.arc(avatarCanvas.width/2, 40, avatarParts.head.size, 0, Math.PI*2);
+    avatarCtx.fill();
+    avatarCtx.fillStyle = avatarParts.eyes.color;
+    avatarCtx.beginPath();
+    avatarCtx.arc(avatarCanvas.width/2 -10, 40, avatarParts.eyes.size,0, Math.PI*2);
+    avatarCtx.arc(avatarCanvas.width/2 +10, 40, avatarParts.eyes.size,0, Math.PI*2);
+    avatarCtx.fill();
+    avatarCtx.fillStyle = avatarParts.body.color;
+    avatarCtx.fillRect(avatarCanvas.width/2 - avatarParts.body.width/2, 60, avatarParts.body.width, avatarParts.body.height);
+}
+
+function drawMonster() {
+    monsterCtx.clearRect(0,0,monsterCanvas.width, monsterCanvas.height);
+    monsterCtx.fillStyle = "#ff5555";
+    const size = 50 + monster.level*5;
+    monsterCtx.beginPath();
+    monsterCtx.arc(monsterCanvas.width/2, monsterCanvas.height/2, size,0,Math.PI*2);
+    monsterCtx.fill();
+    monsterCtx.fillStyle="white";
+    monsterCtx.font="16px Arial";
+    monsterCtx.textAlign="center";
+    monsterCtx.fillText("Lv."+monster.level, monsterCanvas.width/2, monsterCanvas.height-10);
+}
+
+// 初回描画
+drawAvatar();
+drawMonster();
+updatePointsDisplay();
+
+// タスク処理
 const taskList = document.getElementById("task-list");
 document.getElementById("create-task-btn").onclick = () => {
-  const input = document.getElementById("new-task");
-  if (!input.value) return;
-  const li = document.createElement("li");
-  li.textContent = input.value;
-  taskList.appendChild(li);
-  input.value = "";
-  data.points += 5; // タスク追加でポイント
-  updatePointsDisplay();
+    const input = document.getElementById("new-task-input");
+    if(input.value.trim()==="") return;
+    const li = document.createElement("li");
+    li.textContent = input.value;
+    li.onclick = () => li.classList.toggle("selected");
+    taskList.appendChild(li);
+    input.value="";
+    updateTaskButtons();
 };
 
-// ポイント更新
-function updatePointsDisplay() {
-  document.getElementById("points-display").textContent = data.points;
-  document.getElementById("shop-points").textContent = data.points;
-}
-
-// アバター編集
-const avatarParts = [];
-const editAvatarCanvas = document.getElementById("edit-avatar-canvas");
-const editCtx = editAvatarCanvas.getContext("2d");
-const partsContainer = document.getElementById("parts-container");
-
-// パーツ例
-const parts = [
-  { name: "髪1", color: "yellow" },
-  { name: "髪2", color: "orange" },
-  { name: "服1", color: "red" },
-  { name: "服2", color: "blue" }
-];
-
-parts.forEach((part) => {
-  const btn = document.createElement("button");
-  btn.className = "part-btn";
-  btn.style.backgroundColor = part.color;
-  btn.title = part.name;
-  btn.onclick = () => {
-    avatarParts.push(part);
-    drawAvatar(editCtx, avatarParts);
-  };
-  partsContainer.appendChild(btn);
-});
-
-function drawAvatar(ctx, partsArray) {
-  ctx.clearRect(0,0,160,160);
-  ctx.beginPath();
-  ctx.arc(80,80,80,0,Math.PI*2);
-  ctx.closePath();
-  ctx.clip();
-  ctx.fillStyle = "#111";
-  ctx.fillRect(0,0,160,160);
-  partsArray.forEach((p,i)=>{
-    ctx.fillStyle = p.color;
-    ctx.fillRect(20, 20 + i*30, 120, 20);
-  });
-}
-
-// モーダル開閉
-const avatarModal = document.getElementById("avatar-modal");
-document.getElementById("open-avatar-editor").onclick = () => avatarModal.style.display = "block";
-document.getElementById("close-avatar-btn").onclick = () => avatarModal.style.display = "none";
-document.getElementById("save-avatar-btn").onclick = () => {
-  const mainCanvas = document.getElementById("avatar-canvas");
-  drawAvatar(mainCanvas.getContext("2d"), avatarParts);
-  avatarModal.style.display = "none";
-};
-
-// ショップ機能
-const shopItems = [
-  { name: "髪1", color: "yellow", cost: 10 },
-  { name: "髪2", color: "orange", cost: 15 },
-  { name: "服1", color: "red", cost: 20 },
-  { name: "服2", color: "blue", cost: 25 }
-];
-
-const shopModal = document.getElementById("shop-modal");
-const shopContainer = document.getElementById("shop-items-container");
-
-document.getElementById("open-shop").onclick = () => {
-  shopModal.style.display = "block";
-  updatePointsDisplay();
-  renderShopItems();
-};
-document.getElementById("close-shop-btn").onclick = () => shopModal.style.display = "none";
-
-function renderShopItems() {
-  shopContainer.innerHTML = "";
-  shopItems.forEach(item => {
-    const btn = document.createElement("button");
-    btn.className = "shop-item-btn";
-    btn.style.backgroundColor = item.color;
-    btn.title = `${item.name} - ${item.cost}pt`;
-    btn.onclick = () => purchaseItem(item);
-    shopContainer.appendChild(btn);
-  });
-}
-
-function purchaseItem(item) {
-  if (data.points >= item.cost) {
-    data.points -= item.cost;
-    avatarParts.push(item);
-    drawAvatar(document.getElementById("avatar-canvas").getContext("2d"), avatarParts);
+document.getElementById("finish-task-btn").onclick = () => {
+    const selectedTasks = document.querySelectorAll("#task-list li.selected");
+    selectedTasks.forEach(t=>t.remove());
+    const gainedPoints = selectedTasks.length*10;
+    data.points += gainedPoints;
+    const gainedExp = selectedTasks.length*15;
+    monster.exp += gainedExp;
+    checkMonsterLevelUp();
     updatePointsDisplay();
-    alert(`${item.name} を購入しました！`);
-  } else {
-    alert("ポイントが足りません！");
-  }
+    updateTaskButtons();
+    drawMonster();
+};
+
+document.getElementById("delete-task-btn").onclick = () => {
+    const selectedTasks = document.querySelectorAll("#task-list li.selected");
+    selectedTasks.forEach(t=>t.remove());
+    updateTaskButtons();
+};
+
+function updateTaskButtons(){
+    const anySelected = document.querySelectorAll("#task-list li.selected").length>0;
+    document.getElementById("finish-task-btn").disabled=!anySelected;
+    document.getElementById("delete-task-btn").disabled=!anySelected;
+}
+
+// モンスター経験値処理
+function checkMonsterLevelUp(){
+    while(monster.exp >= monster.nextLevelExp){
+        monster.exp -= monster.nextLevelExp;
+        monster.level++;
+        monster.nextLevelExp = monster.level*50;
+        alert(`モンスターが成長！Lv.${monster.level}`);
+    }
+}
+
+// ポイント表示更新
+function updatePointsDisplay(){
+    document.getElementById("points-display").textContent = data.points;
+}
+
+// ショップ処理
+const modal = document.getElementById("modal");
+const modalContent = document.getElementById("modal-content");
+document.getElementById("open-shop").onclick = () => showShop();
+
+function showShop(){
+    modalContent.innerHTML="<h2>ショップ</h2>";
+    shopItems.forEach((item,index)=>{
+        const btn = document.createElement("button");
+        btn.style.backgroundColor=item.color;
+        btn.textContent=`${item.type} - ${item.price}P`;
+        btn.onclick=()=>buyItem(index);
+        modalContent.appendChild(btn);
+    });
+    modal.style.display="block";
+}
+
+modal.onclick=(e)=>{if(e.target===modal) modal.style.display="none";};
+
+function buyItem(index){
+    const item = shopItems[index];
+    if(data.points>=item.price){
+        data.points -= item.price;
+        avatarParts[item.type] = { color:item.color };
+        drawAvatar();
+        updatePointsDisplay();
+        alert(`${item.type}を購入・装備しました！`);
+    } else alert("ポイントが足りません");
+}
+
+// アバター編集ボタン（ランダム変更サンプル）
+document.getElementById("open-avatar-editor").onclick = ()=>{
+    avatarParts.head.color = "#"+Math.floor(Math.random()*16777215).toString(16);
+    avatarParts.body.color = "#"+Math.floor(Math.random()*16777215).toString(16);
+    drawAvatar();
 }
