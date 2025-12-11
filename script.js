@@ -1,85 +1,116 @@
-// ---------- ユーザー情報 ----------
-let username = localStorage.getItem('username') || 'ヒーロー';
-let points = parseInt(localStorage.getItem('points')) || 0;
-let level = parseInt(localStorage.getItem('level')) || 1;
+/* ======== 初期データ ======== */
+let username = "ヒーロー";
+let points = 50;
+let level = 1;
+let tasks = [];
 
-document.getElementById('username-display').textContent = username;
-document.getElementById('points-display').textContent = points;
-document.getElementById('level-display').textContent = level;
+/* ======== HTML要素取得 ======== */
+const usernameDisplay = document.getElementById("username-display");
+const pointsDisplay = document.getElementById("points-display");
+const levelDisplay = document.getElementById("level-display");
 
-// ---------- タスク管理 ----------
-const taskInput = document.getElementById('new-task-input');
-const taskList = document.getElementById('task-list');
-const createTaskBtn = document.getElementById('create-task-btn');
-let selectedTask = null;
+const taskList = document.getElementById("task-list");
+const taskInput = document.getElementById("task-input");
+const createTaskBtn = document.getElementById("create-task-btn");
+const finishTaskBtn = document.getElementById("finish-task-btn");
+const deleteTaskBtn = document.getElementById("delete-task-btn");
 
-// タスクを localStorage から読み込む
-let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
-tasks.forEach(task => addTaskToList(task));
+const avatarCanvas = document.getElementById("avatar-canvas");
+const ctx = avatarCanvas.getContext("2d");
 
-createTaskBtn.addEventListener('click', () => {
-    const taskName = taskInput.value.trim();
-    if(taskName === '') return;
-    const task = { name: taskName, done: false };
-    tasks.push(task);
-    saveTasks();
-    addTaskToList(task);
-    taskInput.value = '';
-});
+/* ======== 初期描画 ======== */
+function updateDisplay() {
+    usernameDisplay.textContent = username;
+    pointsDisplay.textContent = points;
+    levelDisplay.textContent = level;
 
-function addTaskToList(task) {
-    const li = document.createElement('li');
-    li.textContent = task.name;
-    li.addEventListener('click', () => {
-        Array.from(taskList.children).forEach(c => c.classList.remove('selected'));
-        li.classList.add('selected');
-        selectedTask = li;
-        document.getElementById('finish-task-btn').disabled = false;
-        document.getElementById('delete-task-btn').disabled = false;
+    taskList.innerHTML = "";
+    tasks.forEach((task, idx) => {
+        const li = document.createElement("li");
+        li.textContent = task.name;
+        li.dataset.idx = idx;
+        taskList.appendChild(li);
     });
-    taskList.appendChild(li);
 }
 
-document.getElementById('finish-task-btn').addEventListener('click', () => {
-    if(!selectedTask) return;
-    points += 10;
-    localStorage.setItem('points', points);
-    document.getElementById('points-display').textContent = points;
+/* ======== タスク追加 ======== */
+createTaskBtn.addEventListener("click", () => {
+    const taskName = taskInput.value.trim();
+    if (taskName) {
+        tasks.push({ name: taskName, done: false });
+        taskInput.value = "";
+        updateDisplay();
+    }
 });
 
-document.getElementById('delete-task-btn').addEventListener('click', () => {
-    if(!selectedTask) return;
-    const index = Array.from(taskList.children).indexOf(selectedTask);
-    tasks.splice(index,1);
-    saveTasks();
-    selectedTask.remove();
-    selectedTask = null;
-    document.getElementById('finish-task-btn').disabled = true;
-    document.getElementById('delete-task-btn').disabled = true;
+/* ======== タスク完了（ポイント付与） ======== */
+finishTaskBtn.addEventListener("click", () => {
+    const selectedIdx = getSelectedTaskIdx();
+    if (selectedIdx !== null) {
+        tasks[selectedIdx].done = true;
+        points += 10;
+        checkLevelUp();
+        updateDisplay();
+    }
 });
 
-function saveTasks() {
-    localStorage.setItem('tasks', JSON.stringify(tasks));
+/* ======== タスク削除 ======== */
+deleteTaskBtn.addEventListener("click", () => {
+    const selectedIdx = getSelectedTaskIdx();
+    if (selectedIdx !== null) {
+        tasks.splice(selectedIdx, 1);
+        updateDisplay();
+    }
+});
+
+/* ======== タスク選択補助 ======== */
+taskList.addEventListener("click", (e) => {
+    if (e.target.tagName === "LI") {
+        [...taskList.children].forEach(li => li.style.background = "");
+        e.target.style.background = "#3ea7ff44";
+    }
+});
+
+function getSelectedTaskIdx() {
+    const selected = [...taskList.children].find(li => li.style.background !== "");
+    return selected ? parseInt(selected.dataset.idx) : null;
 }
 
-// ---------- アバター描画 ----------
-const canvas = document.getElementById('avatar-canvas');
-const ctx = canvas.getContext('2d');
+/* ======== レベルアップ判定 ======== */
+function checkLevelUp() {
+    const newLevel = Math.floor(points / 50) + 1;
+    if (newLevel > level) level = newLevel;
+}
 
+/* ======== アバター描画 ======== */
 function drawAvatar() {
-    // ドット絵例（本格的にパーツ増やして拡張可能）
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    // 顔
-    ctx.fillStyle = '#FFD1A4';
-    ctx.fillRect(60,40,40,40);
-    // 目
-    ctx.fillStyle = '#000';
-    ctx.fillRect(70,50,5,5);
-    ctx.fillRect(85,50,5,5);
-    // 口
-    ctx.fillStyle = '#900';
-    ctx.fillRect(75,70,10,5);
+    ctx.clearRect(0, 0, avatarCanvas.width, avatarCanvas.height);
+    ctx.fillStyle = "#0d6efd";
+    ctx.fillRect(40, 40, 80, 80); // 仮ドットアバター（四角）
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(60, 60, 20, 20); // 顔っぽいドット
 }
 
 drawAvatar();
+
+/* ======== モーダル ======== */
+const modal = document.getElementById("modal");
+const modalContent = document.getElementById("modal-content");
+
+document.getElementById("open-avatar-editor").addEventListener("click", () => {
+    modalContent.innerHTML = "<h2>アバター編集画面</h2><p>ここでアバターを変更できます。</p>";
+    modal.style.display = "block";
+});
+
+document.getElementById("open-shop").addEventListener("click", () => {
+    modalContent.innerHTML = "<h2>ショップ</h2><p>ポイントでパーツを購入できます。</p>";
+    modal.style.display = "block";
+});
+
+modal.addEventListener("click", (e) => {
+    if (e.target === modal) modal.style.display = "none";
+});
+
+/* ======== 初期表示 ======== */
+updateDisplay();
 
