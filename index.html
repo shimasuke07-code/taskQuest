@@ -39,12 +39,44 @@
     </div>
 </div>
 
-<!-- モーダル -->
+<!-- アバター編集・ショップモーダル -->
 <div id="modal" class="modal">
-    <div class="modal-content" id="modal-content"></div>
+    <div class="modal-content" id="modal-content">
+        <h3>アバター編集</h3>
+        <canvas id="editor-canvas" width="160" height="160" style="border:1px solid #fff;"></canvas>
+        <div class="avatar-parts">
+            <h4>髪</h4>
+            <button class="part-btn" data-part="hair" data-color="#ff0000">赤</button>
+            <button class="part-btn" data-part="hair" data-color="#00ff00">緑</button>
+            <button class="part-btn" data-part="hair" data-color="#0000ff">青</button>
+
+            <h4>体</h4>
+            <button class="part-btn" data-part="body" data-color="#ffff00">黄</button>
+            <button class="part-btn" data-part="body" data-color="#ffffff">白</button>
+            <button class="part-btn" data-part="body" data-color="#000000">黒</button>
+
+            <h4>目</h4>
+            <button class="part-btn" data-part="eyes" data-color="#000000">黒</button>
+            <button class="part-btn" data-part="eyes" data-color="#ffffff">白</button>
+
+            <h4>帽子（限定）</h4>
+            <button class="part-btn" data-part="hat" data-color="#ff00ff">限定ピンク</button>
+        </div>
+        <button id="save-avatar">保存</button>
+        <button id="close-modal">閉じる</button>
+    </div>
+</div>
+
+<!-- ショップモーダル -->
+<div id="shop-modal" class="modal">
+    <div class="modal-content">
+        <h3>ショップ</h3>
+        <p>ポイントを使ってパーツを購入！</p>
+        <div id="shop-items"></div>
+        <button id="close-shop">閉じる</button>
+    </div>
 </div>
 
 <script src="script.js"></script>
 </body>
 </html>
-
