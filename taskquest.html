@@ -7,8 +7,9 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
 <div class="header">
-    <h1>TaskQuest</h1>
+    <img src="images/logo.png" alt="TaskQuest Logo" class="logo">
     <span id="username-display">ヒーロー</span>
     <span id="points-display">50</span>ポイント | Lv.<span id="level-display">1</span>
 </div>
@@ -23,43 +24,27 @@
 
     <div class="tasks">
         <h2>タスク管理</h2>
-        <div class="task-input">
-            <input type="text" id="new-task" placeholder="タスクを入力">
-            <button id="create-task-btn">+作成</button>
-        </div>
+        <input type="text" id="new-task-input" placeholder="新しいタスクを入力">
+        <button id="create-task-btn">+作成</button>
         <ul id="task-list"></ul>
         <button id="finish-task-btn" disabled>完了</button>
         <button id="delete-task-btn" disabled>削除</button>
     </div>
 
-    <div class="other">
-        <h2>モンスター・その他</h2>
+    <div class="monster">
+        <h2>モンスター</h2>
+        <canvas id="monster-canvas" width="160" height="160"></canvas>
         <button id="calendar-btn">カレンダー</button>
         <button id="settings-btn">設定</button>
     </div>
 </div>
 
-<!-- アバター編集モーダル -->
-<div id="avatar-modal" class="modal">
-  <div class="modal-content">
-    <h2>アバター編集</h2>
-    <canvas id="edit-avatar-canvas" width="160" height="160"></canvas>
-    <div id="parts-container"></div>
-    <button id="save-avatar-btn">保存</button>
-    <button id="close-avatar-btn">閉じる</button>
-  </div>
-</div>
-
-<!-- ショップモーダル -->
-<div id="shop-modal" class="modal">
-  <div class="modal-content">
-    <h2>ショップ</h2>
-    <p>ポイント: <span id="shop-points">50</span></p>
-    <div id="shop-items-container"></div>
-    <button id="close-shop-btn">閉じる</button>
-  </div>
+<!-- モーダル -->
+<div id="modal" class="modal">
+    <div class="modal-content" id="modal-content"></div>
 </div>
 
 <script src="script.js"></script>
 </body>
 </html>
+
