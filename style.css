@@ -1,80 +1,7 @@
-/* 共通 */
 body {
     margin: 0;
     font-family: Arial, sans-serif;
     color: white;
-}
-
-/* ホームページ */
-.home-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    background: radial-gradient(circle at center, #0b0c1a, #000000);
-    position: relative;
-    overflow: hidden;
-}
-.home-container::before {
-    content: "";
-    position: absolute;
-    width: 200%;
-    height: 200%;
-    top: -50%;
-    left: -50%;
-    background: radial-gradient(circle, #fff 1px, transparent 1px);
-    background-size: 5px 5px;
-    animation: stars 20s linear infinite;
-    z-index: 0;
-    opacity: 0.6;
-}
-.home-container::after {
-    content: "";
-    position: absolute;
-    width: 200%;
-    height: 200%;
-    top: -50%;
-    left: -50%;
-    background: radial-gradient(circle, #fff 1px, transparent 1px);
-    background-size: 3px 3px;
-    animation: stars2 30s linear infinite;
-    z-index: 0;
-    opacity: 0.4;
-}
-@keyframes stars { from { transform: translate(0,0); } to { transform: translate(100px,100px); } }
-@keyframes stars2 { from { transform: translate(0,0); } to { transform: translate(-100px,-100px); } }
-
-.logo {
-    width: 300px;
-    height: auto;
-    margin-bottom: 40px;
-    z-index: 1;
-    position: relative;
-    filter: drop-shadow(0 0 20px #ff6ec7);
-}
-
-#start-btn {
-    padding: 15px 50px;
-    font-size: 20px;
-    border: none;
-    border-radius: 30px;
-    background: linear-gradient(135deg, #ff6ec7, #8338ec);
-    color: white;
-    cursor: pointer;
-    font-weight: bold;
-    box-shadow: 0 0 15px #ff6ec7;
-    transition: all 0.3s ease;
-    z-index: 1;
-    position: relative;
-}
-#start-btn:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 25px #ff6ec7, 0 0 50px #8338ec;
-}
-
-/* TaskQuest 本体 */
-body {
     background: radial-gradient(circle at center, #0b0c1a, #000000);
 }
 
@@ -100,7 +27,7 @@ body {
 }
 
 .avatar canvas {
-    border-radius: 50%; /* 円形 */
+    border-radius: 50%;
     background-color: #111;
     display: block;
     margin: 10px 0;
@@ -114,13 +41,11 @@ button {
     cursor: pointer;
     font-weight: bold;
 }
-
 button:disabled {
     background-color: #555;
     cursor: not-allowed;
 }
 
-/* タスク入力 */
 .task-input {
     display: flex;
     gap: 10px;
@@ -134,7 +59,6 @@ button:disabled {
     font-size: 16px;
 }
 
-/* モーダル */
 .modal {
     display: none;
     position: fixed;
@@ -147,8 +71,15 @@ button:disabled {
     background-color: #222;
     margin: 10% auto;
     padding: 20px;
-    width: 80%;
+    width: 300px;
     border-radius: 10px;
     color: white;
+    text-align: center;
+}
+.avatar-parts button {
+    margin: 3px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
 }
 
