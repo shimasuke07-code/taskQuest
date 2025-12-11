@@ -7,9 +7,8 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
 <div class="header">
-    <img src="images/logo.png" alt="TaskQuest Logo" class="logo">
+    <h1>TaskQuest</h1>
     <span id="username-display">ヒーロー</span>
     <span id="points-display">50</span>ポイント | Lv.<span id="level-display">1</span>
 </div>
@@ -23,23 +22,23 @@
     </div>
 
     <div class="tasks">
-        <h2>タスク管理</h2>
-        <input type="text" id="new-task-input" placeholder="新しいタスクを入力">
-        <button id="create-task-btn">+作成</button>
+        <h2>タスク</h2>
+        <div class="task-input">
+            <input type="text" id="task-input" placeholder="タスク名を入力">
+            <button id="create-task-btn">+作成</button>
+        </div>
         <ul id="task-list"></ul>
         <button id="finish-task-btn" disabled>完了</button>
         <button id="delete-task-btn" disabled>削除</button>
     </div>
 
-    <div class="monster">
-        <h2>モンスター</h2>
-        <canvas id="monster-canvas" width="160" height="160"></canvas>
+    <div class="other">
+        <h2>その他</h2>
         <button id="calendar-btn">カレンダー</button>
         <button id="settings-btn">設定</button>
     </div>
 </div>
 
-<!-- モーダル -->
 <div id="modal" class="modal">
     <div class="modal-content" id="modal-content"></div>
 </div>
