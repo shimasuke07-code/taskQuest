@@ -1,212 +1,121 @@
-/* ======== 全体 ======== */
-
 body {
     margin: 0;
-    font-family: "Segoe UI", sans-serif;
+    font-family: Arial, sans-serif;
+    background: radial-gradient(circle at center, #0b0c1a, #000000);
     color: white;
 }
 
-
-/* ======== 宇宙背景（ホーム・本体共通） ======== */
-
-.home-body, .main-body {
-    background: radial-gradient(ellipse at center, #0a0f2c, #000000 80%);
-    background-size: cover;
-    animation: spaceMove 20s linear infinite;
-}
-
-@keyframes spaceMove {
-    0% { background-position: 0 0; }
-    100% { background-position: -500px -500px; }
-}
-
-
-/* ======== ホーム画面 ======== */
-
-.home-container {
-    text-align: center;
-    padding-top: 80px;
-}
-
-.home-logo {
-    width: 250px;
-    max-width: 80%;
-    animation: floatLogo 4s ease-in-out infinite;
-}
-
-@keyframes floatLogo {
-    0% { transform: translateY(0); }
-    50% { transform: translateY(-12px); }
-    100% { transform: translateY(0); }
-}
-
-.home-title {
-    font-size: 32px;
-    margin: 20px 0 5px;
-    text-shadow: 0 0 8px #3ea7ff;
-}
-
-.home-subtitle {
-    font-size: 18px;
-    opacity: 0.8;
-    margin-bottom: 40px;
-}
-
-.start-btn {
-    font-size: 22px;
-    padding: 12px 40px;
-    border-radius: 40px;
-    border: none;
-    background: #0d6efd;
-    cursor: pointer;
-    box-shadow: 0 0 15px #3ea7ff;
-    transition: 0.2s;
-}
-
-.start-btn:hover {
-    background: #3ea7ff;
-    box-shadow: 0 0 25px #66c1ff;
-}
-
-
-
-/* ======== TaskQuest 本体：3カラムレイアウト ======== */
-
-.layout {
+.header {
+    padding: 10px;
+    background-color: #1a1a2e;
     display: flex;
-    padding: 20px;
-    gap: 20px;
-}
-
-.side-panel, .center-panel {
-    background: rgba(20, 30, 60, 0.6);
-    padding: 20px;
-    border-radius: 15px;
-    backdrop-filter: blur(5px);
-    box-shadow: 0 0 12px #0d3aff88;
-}
-
-.left-panel, .right-panel {
-    width: 25%;
-}
-
-.center-panel {
-    width: 50%;
-}
-
-
-
-/* ======== アバター円形フレーム ======== */
-
-.avatar-circle {
-    width: 170px;
-    height: 170px;
-    border-radius: 50%;
-    border: 4px solid #3ea7ff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 15px;
-    box-shadow: 0 0 25px #3ea7ff88;
-}
-
-
-
-/* ======== モンスター表示 ======== */
-
-.monster-box {
-    width: 140px;
-    height: 140px;
-    border-radius: 15px;
-    background: #00000088;
-    border: 2px solid #3ea7ff;
-    display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
 }
 
-
-
-/* ======== タスク入力部分（丸い入力欄） ======== */
-
-.task-input-box {
+.profile {
     display: flex;
     gap: 10px;
-    margin-bottom: 15px;
 }
 
-#task-input {
-    flex: 1;
-    padding: 12px 14px;
-    border-radius: 25px;
-    border: none;
-    outline: none;
-    background: #ffffff11;
-    color: white;
-    font-size: 16px;
-    backdrop-filter: blur(3px);
+.main {
+    display: flex;
+    justify-content: space-around;
+    padding: 20px;
 }
 
+.tasks, .avatar, .other {
+    background-color: #1a1a2e;
+    padding: 20px;
+    border-radius: 15px;
+    width: 30%;
+}
 
-
-/* ======== ボタン ======== */
-
-.blue-btn, .green-btn, .red-btn {
+button {
+    margin: 5px 0;
     padding: 8px 15px;
-    border-radius: 25px;
     border: none;
+    border-radius: 20px;
     cursor: pointer;
-    margin-top: 8px;
-    transition: 0.2s;
-    font-size: 14px;
+    background-color: #4a4aff;
+    color: white;
+    font-weight: bold;
 }
 
-.blue-btn {
-    background: #0d6efd;
-    box-shadow: 0 0 10px #3ea7ff;
+button:hover {
+    background-color: #6a6aff;
 }
 
-.blue-btn:hover {
-    background: #3ea7ff;
+button:disabled {
+    background-color: #555;
+    cursor: not-allowed;
 }
 
-.green-btn {
-    background: #28a745;
-    box-shadow: 0 0 10px #47ff76;
+canvas {
+    background-color: #111;
+    display: block;
+    margin: 10px auto;
+    border-radius: 50%;
 }
 
-.green-btn:hover {
-    background: #47ff76;
-}
-
-.red-btn {
-    background: #dc3545;
-    box-shadow: 0 0 10px #ff6473;
-}
-
-.red-btn:hover {
-    background: #ff6473;
-}
-
-
-
-/* ======== モーダル ======== */
-
+/* モーダル */
 .modal {
     display: none;
     position: fixed;
-    top: 0; left: 0;
+    z-index: 10;
+    left: 0; top: 0;
     width: 100%; height: 100%;
-    background: rgba(0,0,0,0.8);
+    background-color: rgba(0,0,0,0.8);
 }
 
 .modal-content {
-    background: #162040;
-    margin: 8% auto;
+    background-color: #222;
+    margin: 10% auto;
     padding: 20px;
-    width: 70%;
-    border-radius: 12px;
-    box-shadow: 0 0 20px #3ea7ff;
+    width: 80%;
+    border-radius: 10px;
     color: white;
 }
 
+/* ホームページ */
+.home-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: radial-gradient(circle at center, #0b0c1a, #000000);
+}
+
+.home-logo {
+    width: 300px;
+    margin-bottom: 50px;
+}
+
+.start-btn {
+    font-size: 24px;
+    padding: 15px 40px;
+    border-radius: 25px;
+    background-color: #4a4aff;
+    color: white;
+    font-weight: bold;
+}
+
+.start-btn:hover {
+    background-color: #6a6aff;
+}
+
+/* タスク入力 */
+.task-input {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.task-input input {
+    flex: 1;
+    padding: 10px 15px;
+    border-radius: 25px;
+    border: none;
+    font-size: 16px;
+}
