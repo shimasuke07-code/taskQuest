@@ -6,17 +6,24 @@
 <title>TaskQuest - Home</title>
 <link rel="stylesheet" href="style.css">
 </head>
-<body>
+
+<body class="home-body">
+
 <div class="home-container">
+
+    <!-- ロゴ -->
     <img src="images/logo.png" alt="TaskQuest Logo" class="home-logo">
-    <h1>TaskQuest</h1>
-    <button id="start-btn">スタート</button>
+
+    <!-- キャッチコピー -->
+    <h1 class="home-title">冒険の準備はできた？</h1>
+    <p class="home-subtitle">16bitアバター × タスクRPG</p>
+
+    <!-- スタートボタン -->
+    <button class="start-btn" onclick="location.href='index.html'">
+        ▶ Start
+    </button>
+
 </div>
 
-<script>
-document.getElementById('start-btn').addEventListener('click', () => {
-    window.location.href = 'index.html';
-});
-</script>
 </body>
 </html>
