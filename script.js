@@ -1,150 +1,156 @@
-// データ管理
-let data = { points: 50, level: 1 };
-
-// モンスターデータ
-let monster = { level: 1, exp: 0, nextLevelExp: 50 };
-
-// アバターパーツ
-let avatarParts = {
-    head: { color: "#ffcc00", size: 30 },
-    body: { color: "#00ccff", width: 40, height: 60 },
-    eyes: { color: "#000", size: 5 }
+// -------------------------
+// プレイヤーデータロード
+let playerData = JSON.parse(localStorage.getItem("taskquestPlayer")) || {
+    username: "ヒーロー",
+    level: 1,
+    points: 50,
+    tasks: [],
+    avatarParts: []
 };
 
-// ショップパーツ
-let shopItems = [
-    { type: "head", color: "#ff0000", price: 20 },
-    { type: "head", color: "#00ff00", price: 20 },
-    { type: "body", color: "#0000ff", price: 30 },
-    { type: "body", color: "#ffff00", price: 30 }
-];
+const usernameDisplay = document.getElementById("username-display");
+const pointsDisplay = document.getElementById("points-display");
+const levelDisplay = document.getElementById("level-display");
 
-// Canvas参照
-const avatarCanvas = document.getElementById("avatar-canvas");
-const avatarCtx = avatarCanvas.getContext("2d");
-const monsterCanvas = document.getElementById("monster-canvas");
-const monsterCtx = monsterCanvas.getContext("2d");
-
-// 描画関数
-function drawAvatar() {
-    avatarCtx.clearRect(0,0,avatarCanvas.width, avatarCanvas.height);
-    avatarCtx.fillStyle = avatarParts.head.color;
-    avatarCtx.beginPath();
-    avatarCtx.arc(avatarCanvas.width/2, 40, avatarParts.head.size, 0, Math.PI*2);
-    avatarCtx.fill();
-    avatarCtx.fillStyle = avatarParts.eyes.color;
-    avatarCtx.beginPath();
-    avatarCtx.arc(avatarCanvas.width/2 -10, 40, avatarParts.eyes.size,0, Math.PI*2);
-    avatarCtx.arc(avatarCanvas.width/2 +10, 40, avatarParts.eyes.size,0, Math.PI*2);
-    avatarCtx.fill();
-    avatarCtx.fillStyle = avatarParts.body.color;
-    avatarCtx.fillRect(avatarCanvas.width/2 - avatarParts.body.width/2, 60, avatarParts.body.width, avatarParts.body.height);
+function updateHeader() {
+    usernameDisplay.textContent = playerData.username;
+    pointsDisplay.textContent = playerData.points;
+    levelDisplay.textContent = playerData.level;
 }
-
-function drawMonster() {
-    monsterCtx.clearRect(0,0,monsterCanvas.width, monsterCanvas.height);
-    monsterCtx.fillStyle = "#ff5555";
-    const size = 50 + monster.level*5;
-    monsterCtx.beginPath();
-    monsterCtx.arc(monsterCanvas.width/2, monsterCanvas.height/2, size,0,Math.PI*2);
-    monsterCtx.fill();
-    monsterCtx.fillStyle="white";
-    monsterCtx.font="16px Arial";
-    monsterCtx.textAlign="center";
-    monsterCtx.fillText("Lv."+monster.level, monsterCanvas.width/2, monsterCanvas.height-10);
-}
-
-// 初回描画
-drawAvatar();
-drawMonster();
-updatePointsDisplay();
-
-// タスク処理
-const taskList = document.getElementById("task-list");
-document.getElementById("create-task-btn").onclick = () => {
-    const input = document.getElementById("new-task-input");
-    if(input.value.trim()==="") return;
-    const li = document.createElement("li");
-    li.textContent = input.value;
-    li.onclick = () => li.classList.toggle("selected");
-    taskList.appendChild(li);
-    input.value="";
-    updateTaskButtons();
-};
-
-document.getElementById("finish-task-btn").onclick = () => {
-    const selectedTasks = document.querySelectorAll("#task-list li.selected");
-    selectedTasks.forEach(t=>t.remove());
-    const gainedPoints = selectedTasks.length*10;
-    data.points += gainedPoints;
-    const gainedExp = selectedTasks.length*15;
-    monster.exp += gainedExp;
-    checkMonsterLevelUp();
-    updatePointsDisplay();
-    updateTaskButtons();
-    drawMonster();
-};
-
-document.getElementById("delete-task-btn").onclick = () => {
-    const selectedTasks = document.querySelectorAll("#task-list li.selected");
-    selectedTasks.forEach(t=>t.remove());
-    updateTaskButtons();
-};
-
-function updateTaskButtons(){
-    const anySelected = document.querySelectorAll("#task-list li.selected").length>0;
-    document.getElementById("finish-task-btn").disabled=!anySelected;
-    document.getElementById("delete-task-btn").disabled=!anySelected;
-}
-
-// モンスター経験値処理
-function checkMonsterLevelUp(){
-    while(monster.exp >= monster.nextLevelExp){
-        monster.exp -= monster.nextLevelExp;
-        monster.level++;
-        monster.nextLevelExp = monster.level*50;
-        alert(`モンスターが成長！Lv.${monster.level}`);
+usernameDisplay.onclick = () => {
+    const newName = prompt("新しいユーザー名を入力してください:", playerData.username);
+    if(newName){
+        playerData.username = newName;
+        saveData();
+        updateHeader();
     }
+};
+updateHeader();
+
+// -------------------------
+// タスク管理
+const taskInput = document.getElementById("task-input");
+const taskList = document.getElementById("task-list");
+const createBtn = document.getElementById("create-task-btn");
+
+function saveData(){
+    localStorage.setItem("taskquestPlayer", JSON.stringify(playerData));
+    updateHeader();
 }
 
-// ポイント表示更新
-function updatePointsDisplay(){
-    document.getElementById("points-display").textContent = data.points;
+function renderTasks(){
+    taskList.innerHTML = "";
+    playerData.tasks.forEach((task, index) => {
+        const li = document.createElement("li");
+        li.textContent = task.name + (task.done ? " ✅" : "");
+        li.onclick = () => {
+            playerData.tasks[index].done = !playerData.tasks[index].done;
+            if(task.done) playerData.points += 10;
+            saveData();
+            renderTasks();
+        }
+        taskList.appendChild(li);
+    });
 }
 
-// ショップ処理
+createBtn.onclick = () => {
+    const name = taskInput.value.trim();
+    if(name){
+        playerData.tasks.push({name, done:false});
+        taskInput.value = "";
+        saveData();
+        renderTasks();
+    }
+};
+renderTasks();
+
+// -------------------------
+// アバター描画
+const avatarCanvas = document.getElementById("avatar-canvas");
+const ctx = avatarCanvas.getContext("2d");
+
+function drawAvatar(){
+    ctx.clearRect(0,0,avatarCanvas.width,avatarCanvas.height);
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(avatarCanvas.width/2, avatarCanvas.height/2, avatarCanvas.width/2,0,Math.PI*2);
+    ctx.clip();
+    ctx.fillStyle = "#004488";
+    ctx.fillRect(0,0,avatarCanvas.width,avatarCanvas.height);
+    playerData.avatarParts.forEach((part,i)=>{
+        ctx.fillStyle = part.color;
+        ctx.fillRect(avatarCanvas.width/2-20, avatarCanvas.height/2-20+i*5, 40, 10);
+    });
+    ctx.restore();
+}
+drawAvatar();
+
+// -------------------------
+// アバターショップ・編集
 const modal = document.getElementById("modal");
 const modalContent = document.getElementById("modal-content");
-document.getElementById("open-shop").onclick = () => showShop();
 
-function showShop(){
-    modalContent.innerHTML="<h2>ショップ</h2>";
-    shopItems.forEach((item,index)=>{
+const shopParts = [
+    {name:"ヘルメット", color:"#ff0000", price:30},
+    {name:"マント", color:"#00ff00", price:40},
+    {name:"ブーツ", color:"#0000ff", price:20}
+];
+
+function openShop(){
+    modalContent.innerHTML = "<h2>ショップ</h2>";
+    shopParts.forEach((part, index) => {
+        const div = document.createElement("div");
+        div.style.display="flex"; div.style.alignItems="center"; div.style.margin="5px 0";
+        const box = document.createElement("div");
+        box.style.width="30px"; box.style.height="30px"; box.style.background=part.color; box.style.marginRight="10px";
+        div.appendChild(box);
+        const span = document.createElement("span"); span.textContent=`${part.name} (${part.price}ポイント)`; span.style.flex="1";
+        div.appendChild(span);
         const btn = document.createElement("button");
-        btn.style.backgroundColor=item.color;
-        btn.textContent=`${item.type} - ${item.price}P`;
-        btn.onclick=()=>buyItem(index);
-        modalContent.appendChild(btn);
+        btn.textContent="購入";
+        btn.onclick = () => {
+            if(playerData.points >= part.price){
+                playerData.points -= part.price;
+                playerData.avatarParts.push(part);
+                saveData(); drawAvatar();
+                alert(`${part.name}を購入しました！`);
+            } else { alert("ポイントが足りません"); }
+        }
+        div.appendChild(btn);
+        modalContent.appendChild(div);
     });
     modal.style.display="block";
 }
 
-modal.onclick=(e)=>{if(e.target===modal) modal.style.display="none";};
-
-function buyItem(index){
-    const item = shopItems[index];
-    if(data.points>=item.price){
-        data.points -= item.price;
-        avatarParts[item.type] = { color:item.color };
-        drawAvatar();
-        updatePointsDisplay();
-        alert(`${item.type}を購入・装備しました！`);
-    } else alert("ポイントが足りません");
+function openAvatarEditor(){
+    modalContent.innerHTML="<h2>アバター編集</h2>";
+    const canvas = document.createElement("canvas");
+    canvas.width=160; canvas.height=160;
+    const ctx2 = canvas.getContext("2d");
+    function drawEditor(){
+        ctx2.clearRect(0,0,canvas.width,canvas.height);
+        ctx2.save();
+        ctx2.beginPath();
+        ctx2.arc(canvas.width/2, canvas.height/2, canvas.width/2,0,Math.PI*2);
+        ctx2.clip();
+        ctx2.fillStyle="#004488";
+        ctx2.fillRect(0,0,canvas.width,canvas.height);
+        playerData.avatarParts.forEach((part,i)=>{
+            ctx2.fillStyle=part.color;
+            ctx2.fillRect(canvas.width/2-20, canvas.height/2-20+i*5, 40, 10);
+        });
+        ctx2.restore();
+        requestAnimationFrame(drawEditor);
+    }
+    drawEditor();
+    modalContent.appendChild(canvas);
+    modal.style.display="block";
 }
 
-// アバター編集ボタン（ランダム変更サンプル）
-document.getElementById("open-avatar-editor").onclick = ()=>{
-    avatarParts.head.color = "#"+Math.floor(Math.random()*16777215).toString(16);
-    avatarParts.body.color = "#"+Math.floor(Math.random()*16777215).toString(16);
-    drawAvatar();
+document.getElementById("open-shop").onclick = openShop;
+document.getElementById("open-avatar-editor").onclick = openAvatarEditor;
+
+// モーダルクリックで閉じる
+modal.onclick = (e) => {
+    if(e.target === modal) modal.style.display="none";
 }
