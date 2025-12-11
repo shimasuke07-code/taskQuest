@@ -6,76 +6,45 @@
 <title>TaskQuest</title>
 <link rel="stylesheet" href="style.css">
 </head>
+<body>
+<div class="header">
+    <h1>TaskQuest</h1>
+    <div class="profile">
+        <span id="username-display">ヒーロー</span>
+        <span id="points-display">50</span>ポイント | Lv.<span id="level-display">1</span>
+    </div>
+</div>
 
-<body class="main-body">
-
-<!-- 全体レイアウト -->
-<div class="layout">
-
-    <!-- 左：アバター & プロフィール -->
-    <div class="side-panel left-panel">
-
-        <h2>プロフィール</h2>
-
-        <!-- 円形アバター -->
-        <div class="avatar-circle">
-            <canvas id="avatar-canvas" width="160" height="160"></canvas>
-        </div>
-
-        <p>名前：<span id="username-display">ヒーロー</span></p>
-        <p>Lv.<span id="level-display">1</span></p>
-        <p>ポイント：<span id="points-display">0</span></p>
-
-        <button id="open-avatar-editor" class="blue-btn">アバター編集</button>
-        <button id="settings-btn" class="blue-btn">設定</button>
-
+<div class="main">
+    <div class="avatar">
+        <h2>アバター</h2>
+        <canvas id="avatar-canvas" width="160" height="160"></canvas>
+        <button id="open-avatar-editor">アバター編集</button>
+        <button id="open-shop">ショップ</button>
     </div>
 
-
-
-    <!-- 中央：タスク管理 -->
-    <div class="center-panel">
-
-        <h2>タスク</h2>
-
-        <!-- 入力＋作成ボタン -->
-        <div class="task-input-box">
-            <input id="task-input" type="text" placeholder="タスクを入力…" />
-            <button id="create-task-btn" class="blue-btn">＋作成</button>
+    <div class="tasks">
+        <h2>タスク管理</h2>
+        <div class="task-input">
+            <input type="text" id="new-task-input" placeholder="タスクを入力">
+            <button id="create-task-btn">+作成</button>
         </div>
-
         <ul id="task-list"></ul>
-
-        <button id="finish-task-btn" class="green-btn" disabled>✓ 完了</button>
-        <button id="delete-task-btn" class="red-btn" disabled>🗑 削除</button>
-
+        <button id="finish-task-btn" disabled>完了</button>
+        <button id="delete-task-btn" disabled>削除</button>
     </div>
 
-
-
-    <!-- 右：モンスター & その他 -->
-    <div class="side-panel right-panel">
-
-        <h2>モンスター</h2>
-
-        <div class="monster-box">
-            <canvas id="monster-canvas" width="120" height="120"></canvas>
-        </div>
-
-        <h3>その他</h3>
-        <button id="calendar-btn" class="blue-btn">カレンダー</button>
-
+    <div class="other">
+        <h2>モンスター & その他</h2>
+        <button id="calendar-btn">カレンダー</button>
+        <button id="settings-btn">設定</button>
     </div>
-
 </div>
 
-
-
-<!-- モーダル（アバター編集 / 設定 / カレンダー） -->
+<!-- アバター編集・ショップ用モーダル -->
 <div id="modal" class="modal">
-    <div id="modal-content" class="modal-content"></div>
+    <div class="modal-content" id="modal-content"></div>
 </div>
-
 
 <script src="script.js"></script>
 </body>
