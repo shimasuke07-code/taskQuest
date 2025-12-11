@@ -6,37 +6,51 @@
 <title>TaskQuest</title>
 <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
+
 <div class="header">
     <h1>TaskQuest</h1>
     <span id="username-display">ヒーロー</span>
-    <span id="points-display">50</span>ポイント | Lv.<span id="level-display">1</span>
+    <span id="points-display">50</span>pt | Lv.<span id="level-display">1</span>
 </div>
 
 <div class="main">
+
+    <!-- 左：プロフィール -->
+    <div class="profile">
+        <h2>プロフィール</h2>
+        <div class="avatar-circle">
+            <canvas id="avatar-canvas" width="160" height="160"></canvas>
+        </div>
+        <button class="cool-btn" id="open-avatar-editor">アバター編集</button>
+        <button class="cool-btn" id="open-shop">ショップ</button>
+    </div>
+
+    <!-- 中央：タスク -->
     <div class="tasks">
-        <h2>タスク</h2>
+        <h2>タスク管理</h2>
+        <div class="task-input">
+            <input id="task-input-box" type="text" placeholder="タスク名を入力">
+            <button class="cool-btn" id="create-task-btn">+作成</button>
+        </div>
         <ul id="task-list"></ul>
-        <button id="create-task-btn">+作成</button>
-        <button id="finish-task-btn" disabled>完了</button>
-        <button id="delete-task-btn" disabled>削除</button>
+        <button class="cool-btn" id="finish-task-btn" disabled>完了</button>
+        <button class="cool-btn" id="delete-task-btn" disabled>削除</button>
     </div>
 
-    <div class="avatar">
-        <h2>アバター</h2>
-        <canvas id="avatar-canvas" width="160" height="160"></canvas>
-        <button id="open-avatar-editor">アバター編集</button>
-        <button id="open-shop">ショップ</button>
-    </div>
-
-    <div class="other">
+    <!-- 右：モンスター + その他 -->
+    <div class="monster">
+        <h2>モンスター</h2>
+        <canvas id="monster-canvas" width="160" height="160"></canvas>
         <h2>その他</h2>
-        <button id="calendar-btn">カレンダー</button>
-        <button id="settings-btn">設定</button>
+        <button class="cool-btn" id="calendar-btn">カレンダー</button>
+        <button class="cool-btn" id="settings-btn">設定</button>
     </div>
+
 </div>
 
-<!-- アバター編集・ショップ用モーダル -->
+<!-- モーダル（アバター編集/ショップ） -->
 <div id="modal" class="modal">
     <div class="modal-content" id="modal-content"></div>
 </div>
@@ -44,4 +58,3 @@
 <script src="script.js"></script>
 </body>
 </html>
-
