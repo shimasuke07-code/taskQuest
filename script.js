@@ -1,222 +1,117 @@
-/* ================================
-   TaskQuest Script（完全版）
-   - タスク管理
-   - アバター表示
-   - ユーザー名変更
-   - ポイント & レベル
-   - モンスター表示
-   - localStorage 保存
-================================ */
-
-/* ─────────────────────────────
-   保存読み込み
-──────────────────────────── */
-let data = JSON.parse(localStorage.getItem("taskquest-data")) || {
-    username: "ヒーロー",
-    points: 50,
-    level: 1,
-    tasks: [],
-    avatar: {
-        hairColor: "#ffcc99",
-        eyeColor: "#66ccff",
-        bodyColor: "#ffcc66"
-    }
+// プレイヤーデータ
+let data = {
+  points: 50,
+  level: 1,
+  username: "ヒーロー"
 };
 
-/* ─────────────────────────────
-   HTML要素の取得
-──────────────────────────── */
-const usernameDisplay = document.getElementById("username-display");
-const levelDisplay = document.getElementById("level-display");
-const pointsDisplay = document.getElementById("points-display");
-
-const taskInput = document.getElementById("task-input");
+// タスク管理
 const taskList = document.getElementById("task-list");
-
-const createBtn = document.getElementById("create-task-btn");
-const finishBtn = document.getElementById("finish-task-btn");
-const deleteBtn = document.getElementById("delete-task-btn");
-
-const avatarCanvas = document.getElementById("avatar-canvas");
-const ctx = avatarCanvas.getContext("2d");
-
-/* モーダル */
-const modal = document.getElementById("modal");
-const modalContent = document.getElementById("modal-content");
-
-/* ─────────────────────────────
-   初期表示
-──────────────────────────── */
-function init() {
-    usernameDisplay.textContent = data.username;
-    levelDisplay.textContent = data.level;
-    pointsDisplay.textContent = data.points;
-
-    renderTasks();
-    drawAvatar();
-}
-init();
-
-/* ─────────────────────────────
-   保存処理
-──────────────────────────── */
-function save() {
-    localStorage.setItem("taskquest-data", JSON.stringify(data));
-}
-
-/* ─────────────────────────────
-   タスク表示
-──────────────────────────── */
-function renderTasks() {
-    taskList.innerHTML = "";
-    data.tasks.forEach((task, index) => {
-        const li = document.createElement("li");
-        li.textContent = task.name;
-
-        li.onclick = () => {
-            selectTask(index);
-        };
-
-        if (task.selected) {
-            li.style.background = "#444";
-        }
-
-        taskList.appendChild(li);
-    });
-}
-
-/* タスク追加 */
-createBtn.onclick = () => {
-    const text = taskInput.value.trim();
-    if (!text) return;
-
-    data.tasks.push({ name: text, selected: false });
-    taskInput.value = "";
-
-    save();
-    renderTasks();
+document.getElementById("create-task-btn").onclick = () => {
+  const input = document.getElementById("new-task");
+  if (!input.value) return;
+  const li = document.createElement("li");
+  li.textContent = input.value;
+  taskList.appendChild(li);
+  input.value = "";
+  data.points += 5; // タスク追加でポイント
+  updatePointsDisplay();
 };
 
-/* タスク選択 */
-function selectTask(i) {
-    data.tasks.forEach(t => (t.selected = false));
-    data.tasks[i].selected = true;
-
-    finishBtn.disabled = false;
-    deleteBtn.disabled = false;
-
-    renderTasks();
+// ポイント更新
+function updatePointsDisplay() {
+  document.getElementById("points-display").textContent = data.points;
+  document.getElementById("shop-points").textContent = data.points;
 }
 
-/* タスク完了（報酬 +10） */
-finishBtn.onclick = () => {
-    const task = data.tasks.find(t => t.selected);
-    if (!task) return;
+// アバター編集
+const avatarParts = [];
+const editAvatarCanvas = document.getElementById("edit-avatar-canvas");
+const editCtx = editAvatarCanvas.getContext("2d");
+const partsContainer = document.getElementById("parts-container");
 
-    data.points += 10;
-    pointsDisplay.textContent = data.points;
+// パーツ例
+const parts = [
+  { name: "髪1", color: "yellow" },
+  { name: "髪2", color: "orange" },
+  { name: "服1", color: "red" },
+  { name: "服2", color: "blue" }
+];
 
-    // レベルアップ
-    if (data.points >= data.level * 50) {
-        data.level++;
-        levelDisplay.textContent = data.level;
-    }
+parts.forEach((part) => {
+  const btn = document.createElement("button");
+  btn.className = "part-btn";
+  btn.style.backgroundColor = part.color;
+  btn.title = part.name;
+  btn.onclick = () => {
+    avatarParts.push(part);
+    drawAvatar(editCtx, avatarParts);
+  };
+  partsContainer.appendChild(btn);
+});
 
-    data.tasks = data.tasks.filter(t => !t.selected);
-
-    save();
-    renderTasks();
-
-    finishBtn.disabled = true;
-    deleteBtn.disabled = true;
-};
-
-/* タスク削除 */
-deleteBtn.onclick = () => {
-    data.tasks = data.tasks.filter(t => !t.selected);
-    save();
-    renderTasks();
-
-    finishBtn.disabled = true;
-    deleteBtn.disabled = true;
-};
-
-/* ─────────────────────────────
-   アバター描画（超シンプル版）
-──────────────────────────── */
-function drawAvatar() {
-    ctx.clearRect(0, 0, avatarCanvas.width, avatarCanvas.height);
-
-    // 体（丸）
-    ctx.fillStyle = data.avatar.bodyColor;
-    ctx.beginPath();
-    ctx.arc(80, 80, 55, 0, Math.PI * 2);
-    ctx.fill();
-
-    // 目
-    ctx.fillStyle = data.avatar.eyeColor;
-    ctx.beginPath();
-    ctx.arc(60, 70, 8, 0, Math.PI * 2);
-    ctx.arc(100, 70, 8, 0, Math.PI * 2);
-    ctx.fill();
-
-    // 髪
-    ctx.fillStyle = data.avatar.hairColor;
-    ctx.beginPath();
-    ctx.arc(80, 45, 40, Math.PI, 0);
-    ctx.fill();
+function drawAvatar(ctx, partsArray) {
+  ctx.clearRect(0,0,160,160);
+  ctx.beginPath();
+  ctx.arc(80,80,80,0,Math.PI*2);
+  ctx.closePath();
+  ctx.clip();
+  ctx.fillStyle = "#111";
+  ctx.fillRect(0,0,160,160);
+  partsArray.forEach((p,i)=>{
+    ctx.fillStyle = p.color;
+    ctx.fillRect(20, 20 + i*30, 120, 20);
+  });
 }
 
-/* ─────────────────────────────
-   プロフィール編集（ユーザー名）
-──────────────────────────── */
-document.getElementById("edit-username-btn").onclick = () => {
-    modalContent.innerHTML = `
-        <h2>ユーザー名を変更</h2>
-        <input id="new-username" class="modal-input" placeholder="新しい名前">
-        <button id="save-username" class="btn">保存</button>
-        <button id="close-modal" class="btn-danger">閉じる</button>
-    `;
-    modal.style.display = "block";
-
-    document.getElementById("save-username").onclick = () => {
-        const name = document.getElementById("new-username").value.trim();
-        if (!name) return;
-
-        data.username = name;
-        usernameDisplay.textContent = name;
-        save();
-
-        modal.style.display = "none";
-    };
-
-    document.getElementById("close-modal").onclick = () => {
-        modal.style.display = "none";
-    };
+// モーダル開閉
+const avatarModal = document.getElementById("avatar-modal");
+document.getElementById("open-avatar-editor").onclick = () => avatarModal.style.display = "block";
+document.getElementById("close-avatar-btn").onclick = () => avatarModal.style.display = "none";
+document.getElementById("save-avatar-btn").onclick = () => {
+  const mainCanvas = document.getElementById("avatar-canvas");
+  drawAvatar(mainCanvas.getContext("2d"), avatarParts);
+  avatarModal.style.display = "none";
 };
 
-/* ─────────────────────────────
-   モンスター表示用
-──────────────────────────── */
-function renderMonster() {
-    const box = document.getElementById("monster-box");
-    box.innerHTML = `
-        <h3>モンスター</h3>
-        <p>（今はダミー）</p>
-        <div style="width:80px;height:80px;background:#333;border-radius:10px;margin:auto;"></div>
-    `;
+// ショップ機能
+const shopItems = [
+  { name: "髪1", color: "yellow", cost: 10 },
+  { name: "髪2", color: "orange", cost: 15 },
+  { name: "服1", color: "red", cost: 20 },
+  { name: "服2", color: "blue", cost: 25 }
+];
+
+const shopModal = document.getElementById("shop-modal");
+const shopContainer = document.getElementById("shop-items-container");
+
+document.getElementById("open-shop").onclick = () => {
+  shopModal.style.display = "block";
+  updatePointsDisplay();
+  renderShopItems();
+};
+document.getElementById("close-shop-btn").onclick = () => shopModal.style.display = "none";
+
+function renderShopItems() {
+  shopContainer.innerHTML = "";
+  shopItems.forEach(item => {
+    const btn = document.createElement("button");
+    btn.className = "shop-item-btn";
+    btn.style.backgroundColor = item.color;
+    btn.title = `${item.name} - ${item.cost}pt`;
+    btn.onclick = () => purchaseItem(item);
+    shopContainer.appendChild(btn);
+  });
 }
-renderMonster();
 
-/* ─────────────────────────────
-   モーダル閉じる（外クリック）
-──────────────────────────── */
-window.onclick = (e) => {
-    if (e.target === modal) {
-        modal.style.display = "none";
-    }
-};
-
-// ===============================
-document.getElementById("calendar-btn").onclick=()=>{alert("カレンダーは開発中");};
-document.getElementById("settings-btn").onclick=()=>{alert("設定は開発中");};
+function purchaseItem(item) {
+  if (data.points >= item.cost) {
+    data.points -= item.cost;
+    avatarParts.push(item);
+    drawAvatar(document.getElementById("avatar-canvas").getContext("2d"), avatarParts);
+    updatePointsDisplay();
+    alert(`${item.name} を購入しました！`);
+  } else {
+    alert("ポイントが足りません！");
+  }
+}
