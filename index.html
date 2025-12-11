@@ -3,58 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TaskQuest</title>
+<title>TaskQuest - Home</title>
 <link rel="stylesheet" href="style.css">
 </head>
 
-<body>
+<body class="home-bg">
 
-<div class="header">
-    <h1>TaskQuest</h1>
-    <span id="username-display">ヒーロー</span>
-    <span id="points-display">50</span>pt | Lv.<span id="level-display">1</span>
+<div class="home-container">
+    <img src="images/logo.png" alt="TaskQuest Logo" class="home-logo">
+
+    <h1 class="home-title">TaskQuest</h1>
+    <p class="home-subtitle">タスクをこなして冒険に出よう！</p>
+
+    <a href="main.html" class="start-btn">▶ はじめる</a>
 </div>
 
-<div class="main">
-
-    <!-- 左：プロフィール -->
-    <div class="profile">
-        <h2>プロフィール</h2>
-        <div class="avatar-circle">
-            <canvas id="avatar-canvas" width="160" height="160"></canvas>
-        </div>
-        <button class="cool-btn" id="open-avatar-editor">アバター編集</button>
-        <button class="cool-btn" id="open-shop">ショップ</button>
-    </div>
-
-    <!-- 中央：タスク -->
-    <div class="tasks">
-        <h2>タスク管理</h2>
-        <div class="task-input">
-            <input id="task-input-box" type="text" placeholder="タスク名を入力">
-            <button class="cool-btn" id="create-task-btn">+作成</button>
-        </div>
-        <ul id="task-list"></ul>
-        <button class="cool-btn" id="finish-task-btn" disabled>完了</button>
-        <button class="cool-btn" id="delete-task-btn" disabled>削除</button>
-    </div>
-
-    <!-- 右：モンスター + その他 -->
-    <div class="monster">
-        <h2>モンスター</h2>
-        <canvas id="monster-canvas" width="160" height="160"></canvas>
-        <h2>その他</h2>
-        <button class="cool-btn" id="calendar-btn">カレンダー</button>
-        <button class="cool-btn" id="settings-btn">設定</button>
-    </div>
-
-</div>
-
-<!-- モーダル（アバター編集/ショップ） -->
-<div id="modal" class="modal">
-    <div class="modal-content" id="modal-content"></div>
-</div>
-
-<script src="script.js"></script>
 </body>
 </html>
