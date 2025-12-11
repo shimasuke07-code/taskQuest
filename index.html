@@ -8,10 +8,66 @@
 </head>
 <body>
 <div class="home-container">
-    <img src="images/logo.png" alt="TaskQuest Logo" class="logo">
-    <h1>TaskQuestへようこそ！</h1>
-    <p>タスク管理と育成ゲームが一緒になった新感覚アプリ</p>
-    <button onclick="location.href='taskquest.html'">ゲームを始める</button>
+    <img src="images/logo.png" alt="TaskQuestロゴ" class="logo">
+    <h1>TaskQuestへようこそ</h1>
+    
+    <div class="login-section">
+        <label for="username-input">ユーザー名を入力:</label>
+        <input type="text" id="username-input" placeholder="ヒーロー">
+        <button id="start-btn">スタート</button>
+    </div>
 </div>
+
+<script>
+document.getElementById("start-btn").onclick = () => {
+    const username = document.getElementById("username-input").value || "ヒーロー";
+    localStorage.setItem("taskquestPlayer", JSON.stringify({
+        username: username,
+        level: 1,
+        points: 50,
+        tasks: [],
+        avatarParts: []
+    }));
+    window.location.href = "index.html";
+};
+</script>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: radial-gradient(circle at center, #0b0c1a, #000000);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+.home-container {
+    text-align: center;
+}
+.logo {
+    width: 150px;
+    margin-bottom: 20px;
+}
+input[type="text"] {
+    padding: 10px;
+    border-radius: 20px;
+    border: none;
+    margin-right: 10px;
+    width: 150px;
+}
+button {
+    padding: 10px 15px;
+    border-radius: 20px;
+    border: none;
+    background-color: #1a1a2e;
+    color: white;
+    cursor: pointer;
+}
+button:hover {
+    background-color: #333366;
+}
+</style>
 </body>
 </html>
