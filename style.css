@@ -1,106 +1,196 @@
-b/* 宇宙背景アニメーション */
+/* ===========================
+  基本設定（宇宙背景）
+=========================== */
 body {
     margin: 0;
-    font-family: Arial, sans-serif;
-    background: radial-gradient(circle at center, #0b0c1a, #000000);
-    background-size: 400% 400%;
-    animation: bgMove 20s ease infinite;
-    color: white;
+    font-family: 'Segoe UI', sans-serif;
+    color: #fff;
+    background: radial-gradient(circle at center, #0b0c1a, #02040d 60%, #000000);
+    background-attachment: fixed;
 }
 
-@keyframes bgMove {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
-
-/* ヘッダー */
+/* ===========================
+  ヘッダー
+=========================== */
 .header {
-    padding: 15px;
-    background-color: rgba(20,20,40,0.8);
+    background: rgba(20, 20, 40, 0.9);
+    padding: 10px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    border-bottom: 2px solid #3a3a5a;
 }
 
-/* 3カラムの横並び */
-.main {
+.header-logo {
+    height: 40px;
+    vertical-align: middle;
+}
+
+.header-left {
     display: flex;
-    justify-content: space-around;
+    align-items: center;
+    gap: 10px;
+}
+
+.username {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.header-right {
+    font-size: 16px;
+}
+
+/* ===========================
+  メイン 3 カラム配置
+=========================== */
+.main-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.3fr 1fr;
+    gap: 20px;
     padding: 20px;
 }
 
-/* 各ボックス */
+/* カードデザイン */
 .profile, .tasks, .monster {
-    background-color: rgba(26, 26, 46, 0.85);
+    background: rgba(30, 30, 50, 0.8);
     padding: 15px;
     border-radius: 12px;
-    width: 30%;
-    box-shadow: 0 0 15px #000 inset;
+    border: 1px solid #555;
 }
 
-/* アバター円形枠 */
+/* ===========================
+  アバター表示（丸枠）
+=========================== */
 .avatar-circle {
-    width: 180px;
-    height: 180px;
+    width: 170px;
+    height: 170px;
+    background: #111;
     border-radius: 50%;
-    border: 5px solid #4dd0ff;
+    border: 4px solid #888;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: auto;
+    margin: 10px auto;
 }
 
-/* ボタンをかっこよく */
-.cool-btn {
-    width: 100%;
-    padding: 10px;
-    margin-top: 6px;
-    background: linear-gradient(90deg, #4dd0ff, #0066ff);
-    border: none;
-    color: white;
-    font-weight: bold;
+/* canvasを丸にフィット */
+#avatar-canvas {
+    border-radius: 50%;
+}
+
+/* ===========================
+  タスク入力
+=========================== */
+.task-input-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+#task-input {
+    flex: 1;
+    padding: 8px;
     border-radius: 6px;
-    cursor: pointer;
-    transition: 0.2s;
+    border: 1px solid #444;
+    background: #111;
+    color: white;
 }
 
-.cool-btn:hover {
-    transform: scale(1.05);
-    background: linear-gradient(90deg, #66e0ff, #3388ff);
-}
-
-.cool-btn:disabled {
-    background: #555;
-}
-
-/* タスク入力 */
-.task-input {
+.task-btn-row {
     display: flex;
     gap: 10px;
 }
 
-.task-input input {
-    flex: 1;
-    padding: 8px;
-    border-radius: 5px;
+/* ===========================
+  ボタン
+=========================== */
+.btn,
+.btn-small,
+.btn-danger,
+.btn-create {
+    padding: 8px 12px;
     border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.2s;
 }
 
-/* モーダル */
+/* 汎用ボタン */
+.btn {
+    background: #3a4dff;
+    color: white;
+}
+
+.btn:hover {
+    background: #6372ff;
+}
+
+/* 小さいボタン */
+.btn-small {
+    background: #2ea043;
+    color: white;
+}
+
+.btn-small:hover {
+    background: #3fca56;
+}
+
+/* 削除ボタン */
+.btn-danger {
+    background: #c62828;
+    color: #fff;
+}
+
+.btn-danger:hover {
+    background: #e53935;
+}
+
+/* +作成ボタン（目立つ） */
+.btn-create {
+    background: #ffaa00;
+    color: black;
+}
+
+.btn-create:hover {
+    background: #ffcc33;
+}
+
+/* 無効化状態 */
+button:disabled {
+    background: #555;
+    cursor: not-allowed;
+}
+
+/* ===========================
+  モンスター枠
+=========================== */
+.monster-box {
+    background: #111;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+}
+
+/* ===========================
+  モーダル
+=========================== */
 .modal {
     display: none;
     position: fixed;
+    z-index: 20;
     left: 0; top: 0;
     width: 100%; height: 100%;
-    background-color: rgba(0,0,0,0.8);
+    background: rgba(0,0,0,0.85);
 }
 
 .modal-content {
-    background-color: #222;
+    width: 80%;
+    max-width: 500px;
+    background: #222;
+    border-radius: 12px;
     margin: 10% auto;
     padding: 20px;
-    width: 80%;
-    border-radius: 10px;
-    color: white;
+    border: 1px solid #555;
 }
