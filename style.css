@@ -1,10 +1,41 @@
 body {
     margin: 0;
     font-family: Arial, sans-serif;
-    color: white;
     background: radial-gradient(circle at center, #0b0c1a, #000000);
+    color: white;
 }
 
+.home-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+}
+
+.home-logo {
+    width: 250px;
+    height: auto;
+    margin-bottom: 20px;
+}
+
+button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    background-color: #4a90e2;
+    color: white;
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #357ab8;
+}
+
+/* TaskQuest 本体画面 */
 .header {
     padding: 10px;
     background-color: #1a1a2e;
@@ -19,46 +50,59 @@ body {
     padding: 20px;
 }
 
-.tasks, .avatar, .other {
+/* 左: アバター */
+.profile {
     background-color: #1a1a2e;
-    padding: 15px;
-    border-radius: 15px;
-    width: 30%;
+    padding: 10px;
+    border-radius: 10px;
+    width: 25%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-.avatar canvas {
-    border-radius: 50%;
+#avatar-canvas {
     background-color: #111;
-    display: block;
-    margin: 10px 0;
+    border-radius: 50%;
+    margin-bottom: 10px;
 }
 
-button {
-    margin: 5px 0;
-    padding: 8px 12px;
-    border: none;
-    border-radius: 25px;
-    cursor: pointer;
-    font-weight: bold;
-}
-button:disabled {
-    background-color: #555;
-    cursor: not-allowed;
+/* 中央: タスク管理 */
+.tasks {
+    background-color: #1a1a2e;
+    padding: 10px;
+    border-radius: 10px;
+    width: 40%;
 }
 
 .task-input {
     display: flex;
-    gap: 10px;
     margin-bottom: 10px;
 }
+
 .task-input input {
     flex: 1;
-    padding: 10px 15px;
-    border-radius: 25px;
+    padding: 8px;
+    border-radius: 12px;
     border: none;
+    margin-right: 5px;
     font-size: 16px;
 }
 
+#task-list {
+    list-style: none;
+    padding-left: 0;
+}
+
+/* 右: モンスター & その他 */
+.other {
+    background-color: #1a1a2e;
+    padding: 10px;
+    border-radius: 10px;
+    width: 25%;
+}
+
+/* モーダル */
 .modal {
     display: none;
     position: fixed;
@@ -67,19 +111,13 @@ button:disabled {
     width: 100%; height: 100%;
     background-color: rgba(0,0,0,0.8);
 }
+
 .modal-content {
     background-color: #222;
     margin: 10% auto;
     padding: 20px;
-    width: 300px;
+    width: 80%;
     border-radius: 10px;
     color: white;
-    text-align: center;
-}
-.avatar-parts button {
-    margin: 3px;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
 }
 
