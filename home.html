@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TaskQuest ホーム</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="home-container">
+    <img src="images/logo.png" alt="TaskQuest Logo" class="logo">
+    <h1>TaskQuestへようこそ！</h1>
+    <p>タスク管理・アバター育成・ミッション達成で冒険しよう！</p>
+    <button id="start-btn">スタート</button>
+</div>
+
+<script>
+document.getElementById("start-btn").onclick = () => {
+    window.location.href = "main.html";
+};
+</script>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: radial-gradient(circle at center, #0b0c1a, #000000);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.home-container {
+    text-align: center;
+}
+
+.logo {
+    width: 150px;
+    margin-bottom: 20px;
+}
+
+button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    background-color: #1a1a2e;
+    color: white;
+    transition: background 0.3s;
+}
+
+button:hover {
+    background-color: #333366;
+}
+</style>
+</body>
+</html>
